@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,11 +11,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UdemyAPI.Controllers;
+using UdemyAPI.Models;
+using UdemyAPI.Services;
 
 namespace UdemyAPI
 {
     public class Startup
     {
+        //cors
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -31,6 +36,12 @@ namespace UdemyAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UdemyAPI", Version = "v1" });
             });
+            services.AddDbContext<UdemyContext>(options =>
+            {
+                options.UseSqlServer("Server=.;Database=Udemy;Trusted_Connection=True;");
+
+            });
+            services.AddTransient<IDB, DBService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
