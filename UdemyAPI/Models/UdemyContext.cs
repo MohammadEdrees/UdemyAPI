@@ -117,7 +117,7 @@ namespace UdemyAPI.Models
 
                 entity.Property(e => e.CrsId).HasColumnName("Crs_Id");
 
-                entity.Property(e => e.CrsName)
+                entity.Property(e => e.Title)
                     .HasMaxLength(50)
                     .HasColumnName("Crs_name");
 
@@ -169,14 +169,11 @@ namespace UdemyAPI.Models
 
                 entity.Property(e => e.InstId).HasColumnName("Inst_Id");
 
-                entity.Property(e => e.Address).HasMaxLength(50);
+                
 
                 entity.Property(e => e.ImagPath).HasMaxLength(50);
 
-                entity.Property(e => e.InstName)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .HasColumnName("Inst_Name");
+                
 
                 entity.Property(e => e.Mail).IsRequired();
 
@@ -184,7 +181,7 @@ namespace UdemyAPI.Models
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Phone).HasMaxLength(50);
+                
             });
 
             modelBuilder.Entity<Question>(entity =>
