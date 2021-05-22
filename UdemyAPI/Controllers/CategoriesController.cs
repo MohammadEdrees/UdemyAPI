@@ -21,6 +21,11 @@ namespace UdemyAPI.Controllers
         {
             return (_db.GetAllCategories());
         }
+        //public void RegisterInstructor(Instructor s)
+        //{
+        //    _db.addInstructor(s);
+        //}
+        //Upload img with path 
 
     }
 }

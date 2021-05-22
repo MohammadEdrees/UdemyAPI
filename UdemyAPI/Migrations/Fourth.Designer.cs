@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UdemyAPI.Models;
 
 namespace UdemyAPI.Migrations
 {
     [DbContext(typeof(UdemyContext))]
-    partial class UdemyContextModelSnapshot : ModelSnapshot
+    [Migration("20210520175454_RefreshContext")]
+    partial class RefreshContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,7 +133,7 @@ namespace UdemyAPI.Migrations
                     b.Property<string>("Languge")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Levels")
+                    b.Property<string>("Level")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PaymentMethod")
@@ -372,26 +374,6 @@ namespace UdemyAPI.Migrations
                     b.ToTable("Student");
                 });
 
-            modelBuilder.Entity("UdemyAPI.Models.SupCategory", b =>
-                {
-                    b.Property<int>("SupCategoryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CategId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SupCategoryTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("SupCategoryId");
-
-                    b.HasIndex("CategId");
-
-                    b.ToTable("SupCategory");
-                });
-
             modelBuilder.Entity("UdemyAPI.Models.Topic", b =>
                 {
                     b.Property<int>("TopId")
@@ -400,17 +382,18 @@ namespace UdemyAPI.Migrations
                         .HasColumnName("Top_Id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("SupCategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TopName")
-                        .HasMaxLength(50)
+                    b.Property<int>("CategId")
                         .HasColumnType("int")
+                        .HasColumnName("Categ_Id");
+
+                    b.Property<string>("TopName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("Top_Name");
 
                     b.HasKey("TopId");
 
-                    b.HasIndex("SupCategoryId");
+                    b.HasIndex("CategId");
 
                     b.ToTable("Topic");
                 });
@@ -456,34 +439,19 @@ namespace UdemyAPI.Migrations
                     b.Navigation("Top");
                 });
 
-            modelBuilder.Entity("UdemyAPI.Models.SupCategory", b =>
+            modelBuilder.Entity("UdemyAPI.Models.Topic", b =>
                 {
                     b.HasOne("UdemyAPI.Models.Category", "Categ")
-                        .WithMany("SupCategories")
+                        .WithMany("Topics")
                         .HasForeignKey("CategId")
+                        .HasConstraintName("FK_Topic_Category")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Categ");
                 });
 
-            modelBuilder.Entity("UdemyAPI.Models.Topic", b =>
-                {
-                    b.HasOne("UdemyAPI.Models.SupCategory", "SupCategory")
-                        .WithMany("Topics")
-                        .HasForeignKey("SupCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SupCategory");
-                });
-
             modelBuilder.Entity("UdemyAPI.Models.Category", b =>
-                {
-                    b.Navigation("SupCategories");
-                });
-
-            modelBuilder.Entity("UdemyAPI.Models.SupCategory", b =>
                 {
                     b.Navigation("Topics");
                 });

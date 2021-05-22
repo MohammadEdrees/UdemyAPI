@@ -9,6 +9,9 @@ namespace UdemyAPI.Services
     public interface IDB
     {
         List<Category> GetAllCategories();
+        Instructor addInstructor(Instructor s);
+
+        List<Instructor> GetAllInstructors();
 
     }
 }

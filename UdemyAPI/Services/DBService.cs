@@ -13,9 +13,22 @@ namespace UdemyAPI.Services
         {
             _db = db;
         }
+
+        public Instructor addInstructor(Instructor s)
+        {
+            _db.Instructors.Add(s);
+            _db.SaveChanges();
+            return (s);
+        }
+
         public List<Category> GetAllCategories()
         {
             return (_db.Categories.ToList());
+        }
+
+        public List<Instructor> GetAllInstructors()
+        {
+            return (_db.Instructors.ToList());
         }
     }
 }

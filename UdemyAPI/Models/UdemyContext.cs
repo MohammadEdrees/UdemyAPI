@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using UdemyAPI.Services;
+
 #nullable disable
 
 namespace UdemyAPI.Models
@@ -32,8 +31,6 @@ namespace UdemyAPI.Models
         public virtual DbSet<Student> Students { get; set; }
         public virtual DbSet<Topic> Topics { get; set; }
         public virtual DbSet<Video> Videos { get; set; }
-
-       
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -117,13 +114,14 @@ namespace UdemyAPI.Models
 
                 entity.Property(e => e.CrsId).HasColumnName("Crs_Id");
 
-                entity.Property(e => e.Title)
-                    .HasMaxLength(50)
-                    .HasColumnName("Crs_name");
-
                 entity.Property(e => e.Description).HasMaxLength(50);
 
                 entity.Property(e => e.Duration).HasMaxLength(50);
+
+                entity.Property(e => e.Title)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasDefaultValueSql("(N'')");
 
                 entity.Property(e => e.TopId).HasColumnName("Top_Id");
 
@@ -169,11 +167,21 @@ namespace UdemyAPI.Models
 
                 entity.Property(e => e.InstId).HasColumnName("Inst_Id");
 
-                
+                entity.Property(e => e.Address).HasMaxLength(50);
+
+                entity.Property(e => e.Biography).HasMaxLength(50);
+
+                entity.Property(e => e.Communication).HasMaxLength(50);
+
+                entity.Property(e => e.Fname).HasMaxLength(50);
+
+                entity.Property(e => e.HeadLine).HasMaxLength(50);
 
                 entity.Property(e => e.ImagPath).HasMaxLength(50);
 
-                
+                entity.Property(e => e.Language).HasMaxLength(50);
+
+                entity.Property(e => e.Lname).HasMaxLength(50);
 
                 entity.Property(e => e.Mail).IsRequired();
 
@@ -181,7 +189,7 @@ namespace UdemyAPI.Models
                     .IsRequired()
                     .HasMaxLength(50);
 
-                
+                entity.Property(e => e.Phone).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Question>(entity =>
