@@ -14,11 +14,13 @@ using UdemyAPI.Controllers;
 using UdemyAPI.Models;
 using UdemyAPI.Services;
 
+
 namespace UdemyAPI
 {
     public class Startup
     {
         //cors
+        private string enableCors = "cors";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -31,16 +33,24 @@ namespace UdemyAPI
         {
 
             services.AddControllers();
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "UdemyAPI", Version = "v1" });
-            //});
+            services.AddSwaggerDocument();
             services.AddDbContext<UdemyContext>(options =>
             {
                 options.UseSqlServer("Server=.;Database=Udemy;Trusted_Connection=True;");
 
             });
             services.AddTransient<IDB, DBService>();
+            services.AddCors(c =>
+            {
+                c.AddPolicy(enableCors, c => 
+                {
+                    c.AllowAnyOrigin();
+                    c.AllowAnyMethod();
+                    c.AllowAnyHeader();
+
+                });
+            });
+         
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,12 +59,12 @@ namespace UdemyAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseSwagger();
-                //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UdemyAPI v1"));
+                app.UseOpenApi();
+                app.UseSwaggerUi3();
             }
 
             app.UseRouting();
-
+            app.UseCors(enableCors);
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

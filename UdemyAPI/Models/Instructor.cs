@@ -14,8 +14,8 @@ namespace UdemyAPI.Models
         public string Address { get; set; }
 
         [Required]
-        [RegularExpression(@"^(.{0,7}|[^0-9]*|[^A-Z])$",
-        ErrorMessage = "Error, 8 characters, at least one letter and one number")]
+        //[RegularExpression(@"^(.{0,7}|[^0-9]*|[^A-Z])$",
+        //ErrorMessage = "Error, 8 characters, at least one letter and one number")]
         public string Password { get; set; }
 
         public string ImagPath { get; set; }

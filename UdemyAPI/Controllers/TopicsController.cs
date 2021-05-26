@@ -6,22 +6,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using UdemyAPI.Models;
 using UdemyAPI.Services;
+
 namespace UdemyAPI.Controllers
 {
     [Route("api/[controller]/[Action]")]
     [ApiController]
-    public class CategoriesController : ControllerBase
+    public class TopicsController : ControllerBase
     {
         IDB _db;
-        public CategoriesController(IDB db)
+
+        public TopicsController(IDB db)
         {
             _db = db;
         }
-        public List<Category> GetAllCategories()
+
+        [HttpGet]
+        public ActionResult<IEnumerable<Topic>>GetAllTopics()
         {
-            return (_db.GetAllCategories());
+            if (_db.GetAllTopics().Count > 0) return _db.GetAllTopics();
+            else return NotFound();
         }
-        
 
     }
 }

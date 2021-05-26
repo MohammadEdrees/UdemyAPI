@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UdemyAPI.Models;
 
 namespace UdemyAPI.Migrations
 {
     [DbContext(typeof(UdemyContext))]
-    partial class UdemyContextModelSnapshot : ModelSnapshot
+    [Migration("20210525001352_changes")]
+    partial class changes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,9 +147,6 @@ namespace UdemyAPI.Migrations
 
                     b.Property<double>("Rate")
                         .HasColumnType("float");
-
-                    b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Subtitle")
                         .HasColumnType("nvarchar(max)");
@@ -422,20 +421,12 @@ namespace UdemyAPI.Migrations
                         .HasColumnName("Top_Id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("SupCatId")
-                        .HasColumnType("int");
-
                     b.Property<string>("TopName")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("Top_Name");
 
-                    b.Property<int?>("supCategSupCatId")
-                        .HasColumnType("int");
-
                     b.HasKey("TopId");
-
-                    b.HasIndex("supCategSupCatId");
 
                     b.ToTable("Topic");
                 });
@@ -492,23 +483,9 @@ namespace UdemyAPI.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("UdemyAPI.Models.Topic", b =>
-                {
-                    b.HasOne("UdemyAPI.Models.SupCateg", "supCateg")
-                        .WithMany("Topics")
-                        .HasForeignKey("supCategSupCatId");
-
-                    b.Navigation("supCateg");
-                });
-
             modelBuilder.Entity("UdemyAPI.Models.Category", b =>
                 {
                     b.Navigation("SupCategs");
-                });
-
-            modelBuilder.Entity("UdemyAPI.Models.SupCateg", b =>
-                {
-                    b.Navigation("Topics");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.Topic", b =>

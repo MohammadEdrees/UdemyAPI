@@ -31,6 +31,7 @@ namespace UdemyAPI.Models
         public virtual DbSet<Student> Students { get; set; }
         public virtual DbSet<Topic> Topics { get; set; }
         public virtual DbSet<Video> Videos { get; set; }
+        public virtual DbSet<SupCateg> SupCategs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -45,6 +46,12 @@ namespace UdemyAPI.Models
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
+            //modelBuilder.Entity<SupCateg>().HasOne(e => e.Category).WithMany(e => e.SupCategs);
+            modelBuilder.Entity<SupCateg>(ent=> {
+               ent.HasOne(e => e.Category).WithMany(e => e.SupCategs);
+                ent.HasMany(e => e.Topics).WithOne(e => e.supCateg);
+
+            });
             modelBuilder.Entity<Admin>(entity =>
             {
                 entity.ToTable("Admin");
@@ -91,6 +98,7 @@ namespace UdemyAPI.Models
                     .IsRequired()
                     .HasMaxLength(50)
                     .HasColumnName("Category_Name");
+                
             });
 
             modelBuilder.Entity<Choice>(entity =>
@@ -283,16 +291,16 @@ namespace UdemyAPI.Models
 
                 entity.Property(e => e.TopId).HasColumnName("Top_Id");
 
-                entity.Property(e => e.CategId).HasColumnName("Categ_Id");
+               // entity.Property(e => e.CategId).HasColumnName("Categ_Id");
 
                 entity.Property(e => e.TopName)
                     .HasMaxLength(50)
                     .HasColumnName("Top_Name");
 
-                entity.HasOne(d => d.Categ)
-                    .WithMany(p => p.Topics)
-                    .HasForeignKey(d => d.CategId)
-                    .HasConstraintName("FK_Topic_Category");
+                //entity.HasOne(d => d.Categ)
+                //    .WithMany(p => p.Topics)
+                //    .HasForeignKey(d => d.CategId)
+                //    .HasConstraintName("FK_Topic_Category");
             });
 
             modelBuilder.Entity<Video>(entity =>

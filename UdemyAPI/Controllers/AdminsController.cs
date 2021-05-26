@@ -6,22 +6,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using UdemyAPI.Models;
 using UdemyAPI.Services;
+
 namespace UdemyAPI.Controllers
 {
     [Route("api/[controller]/[Action]")]
     [ApiController]
-    public class CategoriesController : ControllerBase
+    public class AdminsController : ControllerBase
     {
         IDB _db;
-        public CategoriesController(IDB db)
+
+        public AdminsController(IDB db)
         {
             _db = db;
         }
-        public List<Category> GetAllCategories()
-        {
-            return (_db.GetAllCategories());
-        }
-        
 
+        [HttpGet]
+        public ActionResult<IEnumerable<Admin>> GetAllAdmins() 
+        {
+            if (_db.GetAllAdmins().Count > 0) return _db.GetAllAdmins();
+            else return NotFound();
+        }
     }
 }

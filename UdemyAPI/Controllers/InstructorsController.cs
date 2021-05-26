@@ -9,7 +9,7 @@ using UdemyAPI.Models;
 
 namespace UdemyAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[Action]")]
     [ApiController]
     public class InstructorsController : ControllerBase
     {
@@ -39,13 +39,53 @@ namespace UdemyAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.addInstructor(ins);
+                _db.AddInstructor(ins);
                 return (ins);
 
             }
             else {
                 return BadRequest();
             }
+
+        }
+
+        [HttpGet]
+        public ActionResult<Instructor> GetInstructorById(int id) {
+            if (id > 0) {
+             Instructor FoundInstructor = _db.GetInstructorById(id);
+            if(FoundInstructor != null)
+                {
+                    return FoundInstructor;
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        
+        //}
+        //[HttpPost]
+        //public ActionResult<Instructor> GetInstructorByName(string name) {
+        //    if (name.Length > 0)
+        //    {
+        //        Instructor FoundInstructor = _db.GetInstructorByName(name);
+        //        if (FoundInstructor != null)
+        //        {
+        //            return FoundInstructor;
+        //        }
+        //        else
+        //        {
+        //            return NotFound();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
 
         }
     }
