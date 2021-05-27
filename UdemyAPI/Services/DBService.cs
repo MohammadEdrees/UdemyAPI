@@ -49,6 +49,11 @@ namespace UdemyAPI.Services
         {
             return _db.Admins.ToList();
         }
+        //13
+        public List<SupCateg> GetSupCategoriesById(int id)
+        {
+            return _db.SupCategs.Where(obj=>obj.CategoryId==id).ToList(); 
+        }
 
 
         //-------------------PostArea----------
@@ -89,6 +94,23 @@ namespace UdemyAPI.Services
         public Instructor GetInstructorByName(string name)
         {
             return _db.Instructors.FirstOrDefault(obj => obj.Fname == name || obj.Lname == name);
+        }
+
+        //14 
+        public Category GetCategoryById(int id)
+        {
+            return _db.Categories.Find(id);
+
+        }
+
+        public List<Topic> GetTopicsBySupCategId(int id)
+        {
+            return _db.Topics.Where(col => col.SupCatId == id).ToList();
+        }
+
+        public List<Course> GetCoursesByTopicId(int id)
+        {
+            return _db.Courses.Where(col => col.TopId == id).ToList();
         }
 
         //--------------CustomCases------------------------

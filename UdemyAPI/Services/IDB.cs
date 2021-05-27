@@ -10,33 +10,43 @@ namespace UdemyAPI.Services
     {
         //-------------ListsArea-------------
 
-        //1
+
         List<Category> GetAllCategories();
-        //2
+
         List<Topic> GetAllTopics();
-        //3
+
         List<Course> GetAllCourses();
-        //4
+
         List<Instructor> GetAllInstructors();
-        //5
+
         List<Student> GetAllStudents();
-        //6
+
         List<Admin> GetAllAdmins();
 
+        List<SupCateg> GetSupCategoriesById(int id);
+
+        List<Topic> GetTopicsBySupCategId(int id);
+
+        List<Course> GetCoursesByTopicId(int id);
+        
+
         //---------------Add-----------------
-        //7
+
         Instructor AddInstructor(Instructor s);
-        //8
+
         Student AddStudent(Student s);
-        //---GetBy--------------------------
-        //9
+        //-----------------------GetBy---------------
+
         public Course GetCourseById(int id);
-        //10
+    
         public Course GetCourseByTitle(string title);
-        //11
+
         public Instructor GetInstructorById(int id);
-        //12
+  
         public Instructor GetInstructorByName(string name);
+
+        public Category GetCategoryById(int id);
+        
         
 
     }

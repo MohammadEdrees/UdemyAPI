@@ -26,5 +26,19 @@ namespace UdemyAPI.Controllers
             if (_db.GetAllInstructors().Count > 0) return _db.GetAllCourses();
             else return NotFound();
         }
+        
+        [HttpGet]
+        public ActionResult<List<Course>> GetCoursesByTopicId(int id)
+        {
+            List<Course> courses = _db.GetCoursesByTopicId(id);
+            if (courses.Count > 0)
+            {
+                return courses;
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
     }
 }

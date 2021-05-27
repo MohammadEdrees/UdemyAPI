@@ -17,10 +17,19 @@ namespace UdemyAPI.Controllers
         {
             _db = db;
         }
-        public List<Category> GetAllCategories()
+        [HttpGet]
+        public ActionResult<List<Category>> GetAllCategories()
         {
-            return (_db.GetAllCategories());
+            return _db.GetAllCategories();
         }
+        [HttpGet]
+        public ActionResult<Category> GetCategoryById(int id) {
+
+            return _db.GetCategoryById(id);
+        }
+
+      
+        
         
 
     }

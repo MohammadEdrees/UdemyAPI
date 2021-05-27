@@ -26,6 +26,23 @@ namespace UdemyAPI.Controllers
             if (_db.GetAllTopics().Count > 0) return _db.GetAllTopics();
             else return NotFound();
         }
+        
+        [HttpGet]
+        public ActionResult<IEnumerable<Topic>>GetTopicsBySupCatId(int supCatId)
+        {
+           List<Topic>Foundtopics = _db.GetTopicsBySupCategId(supCatId);
+            if (Foundtopics.Count>0)
+            {
+                return Foundtopics;
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+
+
 
     }
 }
