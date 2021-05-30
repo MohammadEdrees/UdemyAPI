@@ -8,6 +8,11 @@ namespace UdemyAPI.Models
 {
     public partial class Student
     {
+        public Student()
+        {
+            StudentCourses = new HashSet<StdCr>();
+
+        }
         public int StdId { get; set; }
         [Required]
         [StringLength(15, MinimumLength = 5, ErrorMessage = "Your Name can't be more less than 5 and more than 15")]
@@ -23,5 +28,7 @@ namespace UdemyAPI.Models
         [Required]
         public string Password { get; set; }
         public string Address { get; set; }
+        public virtual ICollection<StdCr> StudentCourses { set; get; }
+
     }
 }

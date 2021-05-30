@@ -7,6 +7,10 @@ namespace UdemyAPI.Models
 {
     public partial class Course
     {
+        public Course()
+        {
+            //studentCourses = new HashSet<StdCr>();
+        }
         public int CrsId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -22,6 +26,9 @@ namespace UdemyAPI.Models
 
         public int TopId { get; set; }
         public virtual Topic Top { get; set; }
+
+        public virtual ICollection<StdCr> studentCourses { set; get; }
+
 
        
     }

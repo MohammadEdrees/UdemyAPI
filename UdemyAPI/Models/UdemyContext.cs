@@ -37,19 +37,20 @@ namespace UdemyAPI.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Server=.;Database=Udemy;Trusted_Connection=True;");
             }
         }
+        // relation - Student - stdCrs - Course   -- Done 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
-            //modelBuilder.Entity<SupCateg>().HasOne(e => e.Category).WithMany(e => e.SupCategs);
-            modelBuilder.Entity<SupCateg>(ent=> {
-               ent.HasOne(e => e.Category).WithMany(e => e.SupCategs);
-                ent.HasMany(e => e.Topics).WithOne(e => e.supCateg);
+            modelBuilder.Entity<SupCateg>(ent =>
+            {
+                ent.HasOne(e => e.Category).WithMany(e => e.SupCategs).HasForeignKey(e=>e.CategoryId);
+                
+                //ent.HasMany(e => e.Topics).WithOne(e => e.supCateg);
 
             });
             modelBuilder.Entity<Admin>(entity =>
@@ -231,6 +232,8 @@ namespace UdemyAPI.Models
                 entity.Property(e => e.CrsId).HasColumnName("Crs_Id");
 
                 entity.Property(e => e.Certificate).HasMaxLength(50);
+                entity.HasOne(obj => obj.Student).WithMany(obj => obj.StudentCourses);
+                entity.HasOne(obj => obj.Course).WithMany(obj => obj.studentCourses);
             });
 
             modelBuilder.Entity<StdExam>(entity =>
@@ -291,12 +294,13 @@ namespace UdemyAPI.Models
 
                 entity.Property(e => e.TopId).HasColumnName("Top_Id");
 
+                entity.Property(e => e.SupCatId).HasColumnName("SupCat_Id");
                // entity.Property(e => e.CategId).HasColumnName("Categ_Id");
 
                 entity.Property(e => e.TopName)
                     .HasMaxLength(50)
                     .HasColumnName("Top_Name");
-
+                entity.HasOne(obj => obj.supCateg).WithMany(obj => obj.Topics).HasForeignKey(obj => obj.SupCatId);
                 //entity.HasOne(d => d.Categ)
                 //    .WithMany(p => p.Topics)
                 //    .HasForeignKey(d => d.CategId)

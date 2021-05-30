@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UdemyAPI.Models;
 
 namespace UdemyAPI.Migrations
 {
     [DbContext(typeof(UdemyContext))]
-    partial class UdemyContextModelSnapshot : ModelSnapshot
+    [Migration("20210530182847_dropStudentCrs")]
+    partial class dropStudentCrs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -299,31 +301,6 @@ namespace UdemyAPI.Migrations
                     b.ToTable("Question");
                 });
 
-            modelBuilder.Entity("UdemyAPI.Models.StdCr", b =>
-                {
-                    b.Property<int>("StdId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("Std_Id");
-
-                    b.Property<int>("CrsId")
-                        .HasColumnType("int")
-                        .HasColumnName("Crs_Id");
-
-                    b.Property<string>("Certificate")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("Grade")
-                        .HasColumnType("int");
-
-                    b.HasKey("StdId", "CrsId");
-
-                    b.HasIndex("CrsId");
-
-                    b.ToTable("Std_Crs");
-                });
-
             modelBuilder.Entity("UdemyAPI.Models.StdExam", b =>
                 {
                     b.Property<int>("StdId")
@@ -424,17 +401,19 @@ namespace UdemyAPI.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("SupCatId")
-                        .HasColumnType("int")
-                        .HasColumnName("SupCat_Id");
+                        .HasColumnType("int");
 
                     b.Property<string>("TopName")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("Top_Name");
 
+                    b.Property<int?>("supCategSupCatId")
+                        .HasColumnType("int");
+
                     b.HasKey("TopId");
 
-                    b.HasIndex("SupCatId");
+                    b.HasIndex("supCategSupCatId");
 
                     b.ToTable("Topic");
                 });
@@ -480,25 +459,6 @@ namespace UdemyAPI.Migrations
                     b.Navigation("Top");
                 });
 
-            modelBuilder.Entity("UdemyAPI.Models.StdCr", b =>
-                {
-                    b.HasOne("UdemyAPI.Models.Course", "Course")
-                        .WithMany("studentCourses")
-                        .HasForeignKey("CrsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("UdemyAPI.Models.Student", "Student")
-                        .WithMany("StudentCourses")
-                        .HasForeignKey("StdId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("UdemyAPI.Models.SupCateg", b =>
                 {
                     b.HasOne("UdemyAPI.Models.Category", "Category")
@@ -514,9 +474,7 @@ namespace UdemyAPI.Migrations
                 {
                     b.HasOne("UdemyAPI.Models.SupCateg", "supCateg")
                         .WithMany("Topics")
-                        .HasForeignKey("SupCatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("supCategSupCatId");
 
                     b.Navigation("supCateg");
                 });
@@ -524,16 +482,6 @@ namespace UdemyAPI.Migrations
             modelBuilder.Entity("UdemyAPI.Models.Category", b =>
                 {
                     b.Navigation("SupCategs");
-                });
-
-            modelBuilder.Entity("UdemyAPI.Models.Course", b =>
-                {
-                    b.Navigation("studentCourses");
-                });
-
-            modelBuilder.Entity("UdemyAPI.Models.Student", b =>
-                {
-                    b.Navigation("StudentCourses");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.SupCateg", b =>

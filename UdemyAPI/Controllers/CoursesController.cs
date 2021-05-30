@@ -40,5 +40,15 @@ namespace UdemyAPI.Controllers
                 return BadRequest();
             }
         }
+        [HttpGet]
+        public ActionResult<int> GetSortedCoursesRelatedToTopic(int id)
+        {
+            int x = _db.GetSortedCoursesRelatedToTopic(id);
+            if (x > 0)
+                return x;
+            return NotFound();
+        }
+
+
     }
 }

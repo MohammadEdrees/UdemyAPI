@@ -10,7 +10,6 @@ namespace UdemyAPI.Services
     {
         //-------------ListsArea-------------
 
-
         List<Category> GetAllCategories();
 
         List<Topic> GetAllTopics();
@@ -23,7 +22,8 @@ namespace UdemyAPI.Services
 
         List<Admin> GetAllAdmins();
 
-        List<SupCateg> GetSupCategoriesById(int id);
+        int GetSortedCoursesRelatedToTopic(int courseId);
+    //  List<SupCateg> GetSupCategoriesById(int id);
 
         List<Topic> GetTopicsBySupCategId(int id);
 
@@ -40,12 +40,18 @@ namespace UdemyAPI.Services
         public Course GetCourseById(int id);
     
         public Course GetCourseByTitle(string title);
+        public List<object> GetSomeCoursesByTitle(string title);
 
         public Instructor GetInstructorById(int id);
   
         public Instructor GetInstructorByName(string name);
 
         public Category GetCategoryById(int id);
+
+       
+
+        
+      
         
         
 

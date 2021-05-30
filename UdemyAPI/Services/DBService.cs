@@ -50,10 +50,10 @@ namespace UdemyAPI.Services
             return _db.Admins.ToList();
         }
         //13
-        public List<SupCateg> GetSupCategoriesById(int id)
-        {
-            return _db.SupCategs.Where(obj=>obj.CategoryId==id).ToList(); 
-        }
+        //public List<SupCateg> GetSupCategoriesById(int id)
+        //{
+        //    return _db.SupCategs.Where(obj=>obj.CategoryId==id).ToList(); 
+        //}
 
 
         //-------------------PostArea----------
@@ -112,6 +112,25 @@ namespace UdemyAPI.Services
         {
             return _db.Courses.Where(col => col.TopId == id).ToList();
         }
+
+        public List<object> GetSomeCoursesByTitle(string title)
+        {
+            var courses= _db.Courses.Where(obj => obj.Title == title);
+            return (List<object>)courses;
+        }
+
+        public int GetSortedCoursesRelatedToTopic(int courseId)
+        {
+            //SortedListOfCouses
+            //Students in each  Course
+          //  Course foundCourse =_db.Courses.Find()
+            //   List<StdCr> studentsincourse =foundCourse.studentCourses.ToList();
+            int StudentsCount = 5;
+            return StudentsCount;
+            //FilterByTopicId
+        }
+
+
 
         //--------------CustomCases------------------------
 

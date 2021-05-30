@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UdemyAPI.Models;
 
 namespace UdemyAPI.Migrations
 {
     [DbContext(typeof(UdemyContext))]
-    partial class UdemyContextModelSnapshot : ModelSnapshot
+    [Migration("20210530181952_fixes2")]
+    partial class fixes2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -424,17 +426,19 @@ namespace UdemyAPI.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("SupCatId")
-                        .HasColumnType("int")
-                        .HasColumnName("SupCat_Id");
+                        .HasColumnType("int");
 
                     b.Property<string>("TopName")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("Top_Name");
 
+                    b.Property<int?>("supCategSupCatId")
+                        .HasColumnType("int");
+
                     b.HasKey("TopId");
 
-                    b.HasIndex("SupCatId");
+                    b.HasIndex("supCategSupCatId");
 
                     b.ToTable("Topic");
                 });
@@ -514,9 +518,7 @@ namespace UdemyAPI.Migrations
                 {
                     b.HasOne("UdemyAPI.Models.SupCateg", "supCateg")
                         .WithMany("Topics")
-                        .HasForeignKey("SupCatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("supCategSupCatId");
 
                     b.Navigation("supCateg");
                 });
