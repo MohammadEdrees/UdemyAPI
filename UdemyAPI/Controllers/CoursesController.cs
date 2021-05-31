@@ -41,12 +41,16 @@ namespace UdemyAPI.Controllers
             }
         }
         [HttpGet]
-        public ActionResult<int> GetSortedCoursesRelatedToTopic(int id)
+        public ActionResult<int>  GetSortedCoursesRelatedToTopic(int id)
         {
-            int x = _db.GetSortedCoursesRelatedToTopic(id);
-            if (x > 0)
-                return x;
-            return NotFound();
+           List<StdCr>studentsCourses = _db.GetAllStudentCouses();
+           var GroupedByCourseId = studentsCourses.GroupBy(e => e.CrsId).ToList();
+           List<StdCr> studentsByCourseId =studentsCourses.Where(e => e.StdId == id).ToList();
+            
+            
+            
+            return _db.GetSortedCoursesRelatedToTopic(id);
+            
         }
 
 

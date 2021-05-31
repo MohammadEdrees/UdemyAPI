@@ -113,22 +113,48 @@ namespace UdemyAPI.Services
             return _db.Courses.Where(col => col.TopId == id).ToList();
         }
 
-        public List<object> GetSomeCoursesByTitle(string title)
-        {
-            var courses= _db.Courses.Where(obj => obj.Title == title);
-            return (List<object>)courses;
-        }
-
+        
         public int GetSortedCoursesRelatedToTopic(int courseId)
         {
-            //SortedListOfCouses
-            //Students in each  Course
-          //  Course foundCourse =_db.Courses.Find()
-            //   List<StdCr> studentsincourse =foundCourse.studentCourses.ToList();
-            int StudentsCount = 5;
-            return StudentsCount;
-            //FilterByTopicId
+            
+            List<StdCr> foundStdCrs = _db.StdCrs.Where(obj => obj.CrsId == courseId).ToList();
+
+            return foundStdCrs.Count;
+
+
         }
+
+        public List<StdCr> GetAllStudentCouses()
+        {
+            return _db.StdCrs.ToList();
+        }
+
+        public List<Category> GetSomeCategoriesByTitle(string title)
+        {
+            return _db.Categories.Where(e => e.CategoryName.Contains(title)).ToList();
+        }
+
+        public List<SupCateg> GetSomeSupCategsByTitle(string title)
+        {
+            return _db.SupCategs.Where(e => e.SupCatTitle.Contains(title)).ToList();
+        }
+
+        public List<Topic> GetSomeTopicsByTitle(string title)
+        {
+            return _db.Topics.Where(e => e.TopName.Contains(title)).ToList();
+        }
+
+        public List<Instructor> GetSomeInstructorsByTitle(string title)
+        {
+            return _db.Instructors.Where(e => e.Fname.Contains(title)).ToList();
+
+        }
+        public List<Course> GetSomeCoursesByTitle(string title)
+        {
+            List<Course> courses = _db.Courses.Where(obj => obj.Title.Contains(title)).ToList();
+            return courses;
+        }
+
 
 
 

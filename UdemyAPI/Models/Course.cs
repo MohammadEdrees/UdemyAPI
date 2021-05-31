@@ -9,7 +9,7 @@ namespace UdemyAPI.Models
     {
         public Course()
         {
-            //studentCourses = new HashSet<StdCr>();
+            studentCourses = new HashSet<StdCr>();
         }
         public int CrsId { get; set; }
         public string Title { get; set; }

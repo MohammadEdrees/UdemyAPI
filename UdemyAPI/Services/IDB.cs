@@ -40,7 +40,11 @@ namespace UdemyAPI.Services
         public Course GetCourseById(int id);
     
         public Course GetCourseByTitle(string title);
-        public List<object> GetSomeCoursesByTitle(string title);
+        public List<Category> GetSomeCategoriesByTitle(string title);
+        public List<SupCateg> GetSomeSupCategsByTitle(string title);
+        public List<Topic> GetSomeTopicsByTitle(string title);
+        public List<Instructor> GetSomeInstructorsByTitle(string title);
+        public List<Course> GetSomeCoursesByTitle(string title);
 
         public Instructor GetInstructorById(int id);
   
@@ -48,7 +52,9 @@ namespace UdemyAPI.Services
 
         public Category GetCategoryById(int id);
 
-       
+        public List<StdCr> GetAllStudentCouses();
+
+        
 
         
       

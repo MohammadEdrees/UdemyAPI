@@ -19,28 +19,42 @@ namespace UdemyAPI.Controllers
         {
             _db = db;
         }
-
+      
         [HttpGet]
-        public ActionResult<IEnumerable<Topic>> GetAllTopics()
+        public ActionResult getAny(string s)
         {
-            if (_db.GetAllTopics().Count > 0) return _db.GetAllTopics();
-            else return NotFound();
-        }
-        [HttpGet]
-        public ActionResult<List<object>> SearchData(string s)
-        {
-
-            if (s == null)
-            {
-                return BadRequest();
-            }
+            List<Course> crss =_db.GetSomeCoursesByTitle(s);
+            if(crss.Count>0)
+            return Ok(crss);
             else
             {
-                 return _db.GetSomeCoursesByTitle(s);
-               
+                List<Topic> topics = _db.GetSomeTopicsByTitle(s);
+                if (topics.Count > 0)
+                    return Ok(topics);
+                else
+                {
+                    List<SupCateg> supCategs = _db.GetSomeSupCategsByTitle(s);
+                    if (supCategs.Count > 0)
+                        return Ok(supCategs);
+                    else
+                    {
+                        List<Category> categories = _db.GetSomeCategoriesByTitle(s);
+                        if (categories.Count > 0)
+                            return Ok(categories);
+                        else
+                        {
+                            List<Instructor> instructors = _db.GetSomeInstructorsByTitle(s);
+                            if (instructors.Count > 0)
+                                return Ok(instructors);
+                            else
+                            {
+                                return NotFound();
+
+                            }
+                        }
+                    }
+                }
             }
-
-
         }
 
 
