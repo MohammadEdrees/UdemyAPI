@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UdemyAPI.Models;
 
 namespace UdemyAPI.Migrations
 {
     [DbContext(typeof(UdemyContext))]
-    partial class UdemyContextModelSnapshot : ModelSnapshot
+    [Migration("20210530164021_ZEFT")]
+    partial class ZEFT
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,10 +60,8 @@ namespace UdemyAPI.Migrations
             modelBuilder.Entity("UdemyAPI.Models.AdminCr", b =>
                 {
                     b.Property<int>("AdminId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Admin_Id")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("Admin_Id");
 
                     b.Property<int>("CrsId")
                         .HasColumnType("int")
@@ -72,6 +72,8 @@ namespace UdemyAPI.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("AdminId", "CrsId");
+
+                    b.HasIndex("CrsId");
 
                     b.ToTable("Admin_Crs");
                 });
@@ -98,10 +100,8 @@ namespace UdemyAPI.Migrations
             modelBuilder.Entity("UdemyAPI.Models.Choice", b =>
                 {
                     b.Property<int>("QuestionId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Question_Id")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("Question_Id");
 
                     b.Property<string>("Choices")
                         .HasMaxLength(50)
@@ -140,7 +140,7 @@ namespace UdemyAPI.Migrations
                     b.Property<string>("Levels")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PaymentMethod")
+                    b.Property<int?>("PaymentMethod")
                         .HasColumnType("int");
 
                     b.Property<double>("Rate")
@@ -195,16 +195,16 @@ namespace UdemyAPI.Migrations
             modelBuilder.Entity("UdemyAPI.Models.InstCr", b =>
                 {
                     b.Property<int>("InstId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Inst_Id")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("Inst_Id");
 
                     b.Property<int>("CrsId")
                         .HasColumnType("int")
                         .HasColumnName("Crs_Id");
 
                     b.HasKey("InstId", "CrsId");
+
+                    b.HasIndex("CrsId");
 
                     b.ToTable("Inst_Crs");
                 });
@@ -230,7 +230,6 @@ namespace UdemyAPI.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Fname")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -302,7 +301,6 @@ namespace UdemyAPI.Migrations
             modelBuilder.Entity("UdemyAPI.Models.StdCr", b =>
                 {
                     b.Property<int>("StdId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("Std_Id");
 
@@ -345,6 +343,10 @@ namespace UdemyAPI.Migrations
 
                     b.HasKey("StdId", "QuestionId", "ExamId")
                         .HasName("PK_Std_Exam_1");
+
+                    b.HasIndex("ExamId");
+
+                    b.HasIndex("QuestionId");
 
                     b.ToTable("Std_Exam");
                 });
@@ -410,7 +412,7 @@ namespace UdemyAPI.Migrations
 
                     b.HasKey("SupCatId");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex(new[] { "CategoryId" }, "IX_SupCategs_CategoryId");
 
                     b.ToTable("SupCategs");
                 });
@@ -424,8 +426,7 @@ namespace UdemyAPI.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("SupCatId")
-                        .HasColumnType("int")
-                        .HasColumnName("SupCat_Id");
+                        .HasColumnType("int");
 
                     b.Property<string>("TopName")
                         .HasMaxLength(50)
@@ -468,6 +469,39 @@ namespace UdemyAPI.Migrations
                     b.ToTable("Video");
                 });
 
+            modelBuilder.Entity("UdemyAPI.Models.AdminCr", b =>
+                {
+                    b.HasOne("UdemyAPI.Models.Admin", "Admin")
+                        .WithMany("AdminCrs")
+                        .HasForeignKey("AdminId")
+                        .HasConstraintName("FK_Admin_Crs_Admin")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UdemyAPI.Models.Course", "Crs")
+                        .WithMany("AdminCrs")
+                        .HasForeignKey("CrsId")
+                        .HasConstraintName("FK_Admin_Crs_Course")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Admin");
+
+                    b.Navigation("Crs");
+                });
+
+            modelBuilder.Entity("UdemyAPI.Models.Choice", b =>
+                {
+                    b.HasOne("UdemyAPI.Models.Question", "Question")
+                        .WithMany("Choices")
+                        .HasForeignKey("QuestionId")
+                        .HasConstraintName("FK_Choice_Question")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+                });
+
             modelBuilder.Entity("UdemyAPI.Models.Course", b =>
                 {
                     b.HasOne("UdemyAPI.Models.Topic", "Top")
@@ -480,23 +514,75 @@ namespace UdemyAPI.Migrations
                     b.Navigation("Top");
                 });
 
-            modelBuilder.Entity("UdemyAPI.Models.StdCr", b =>
+            modelBuilder.Entity("UdemyAPI.Models.InstCr", b =>
                 {
-                    b.HasOne("UdemyAPI.Models.Course", "Course")
-                        .WithMany("studentCourses")
+                    b.HasOne("UdemyAPI.Models.Course", "Crs")
+                        .WithMany("InstCrs")
                         .HasForeignKey("CrsId")
+                        .HasConstraintName("FK_Inst_Crs_Course")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("UdemyAPI.Models.Student", "Student")
-                        .WithMany("StudentCourses")
+                    b.HasOne("UdemyAPI.Models.Instructor", "Inst")
+                        .WithMany("InstCrs")
+                        .HasForeignKey("InstId")
+                        .HasConstraintName("FK_Inst_Crs_Instructor")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Crs");
+
+                    b.Navigation("Inst");
+                });
+
+            modelBuilder.Entity("UdemyAPI.Models.StdCr", b =>
+                {
+                    b.HasOne("UdemyAPI.Models.Course", "Crs")
+                        .WithMany("StdCrs")
+                        .HasForeignKey("CrsId")
+                        .HasConstraintName("FK_Std_Crs_Course")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UdemyAPI.Models.Student", "Std")
+                        .WithMany("StdCrs")
                         .HasForeignKey("StdId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Course");
+                    b.Navigation("Crs");
 
-                    b.Navigation("Student");
+                    b.Navigation("Std");
+                });
+
+            modelBuilder.Entity("UdemyAPI.Models.StdExam", b =>
+                {
+                    b.HasOne("UdemyAPI.Models.Exam", "Exam")
+                        .WithMany("StdExams")
+                        .HasForeignKey("ExamId")
+                        .HasConstraintName("FK_Std_Exam_Exam")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UdemyAPI.Models.Question", "Question")
+                        .WithMany("StdExams")
+                        .HasForeignKey("QuestionId")
+                        .HasConstraintName("FK_Std_Exam_Question")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UdemyAPI.Models.Student", "Std")
+                        .WithMany("StdExams")
+                        .HasForeignKey("StdId")
+                        .HasConstraintName("FK_Std_Exam_Student")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exam");
+
+                    b.Navigation("Question");
+
+                    b.Navigation("Std");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.SupCateg", b =>
@@ -512,13 +598,19 @@ namespace UdemyAPI.Migrations
 
             modelBuilder.Entity("UdemyAPI.Models.Topic", b =>
                 {
-                    b.HasOne("UdemyAPI.Models.SupCateg", "supCateg")
+                    b.HasOne("UdemyAPI.Models.SupCateg", "SupCat")
                         .WithMany("Topics")
                         .HasForeignKey("SupCatId")
+                        .HasConstraintName("FK_Topic_SupCategs")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("supCateg");
+                    b.Navigation("SupCat");
+                });
+
+            modelBuilder.Entity("UdemyAPI.Models.Admin", b =>
+                {
+                    b.Navigation("AdminCrs");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.Category", b =>
@@ -528,12 +620,35 @@ namespace UdemyAPI.Migrations
 
             modelBuilder.Entity("UdemyAPI.Models.Course", b =>
                 {
-                    b.Navigation("studentCourses");
+                    b.Navigation("AdminCrs");
+
+                    b.Navigation("InstCrs");
+
+                    b.Navigation("StdCrs");
+                });
+
+            modelBuilder.Entity("UdemyAPI.Models.Exam", b =>
+                {
+                    b.Navigation("StdExams");
+                });
+
+            modelBuilder.Entity("UdemyAPI.Models.Instructor", b =>
+                {
+                    b.Navigation("InstCrs");
+                });
+
+            modelBuilder.Entity("UdemyAPI.Models.Question", b =>
+                {
+                    b.Navigation("Choices");
+
+                    b.Navigation("StdExams");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.Student", b =>
                 {
-                    b.Navigation("StudentCourses");
+                    b.Navigation("StdCrs");
+
+                    b.Navigation("StdExams");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.SupCateg", b =>

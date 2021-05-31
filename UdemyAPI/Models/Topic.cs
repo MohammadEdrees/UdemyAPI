@@ -19,7 +19,7 @@ namespace UdemyAPI.Models
 
         public int SupCatId { set; get; }
 
-        public SupCateg supCateg { set; get; }
+        public virtual SupCateg supCateg { set; get; }
 
         //public int CategId { get; set; }
 

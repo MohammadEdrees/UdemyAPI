@@ -33,10 +33,13 @@ namespace UdemyAPI
         {
 
             services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             services.AddSwaggerDocument();
             services.AddDbContext<UdemyContext>(options =>
             {
-                options.UseSqlServer("Server=.;Database=Udemy;Trusted_Connection=True;");
+                options.UseLazyLoadingProxies().UseSqlServer("Server=.;Database=Udemy;Trusted_Connection=True;");
 
             });
             services.AddTransient<IDB, DBService>();

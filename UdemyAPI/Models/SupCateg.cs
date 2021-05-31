@@ -19,7 +19,7 @@ namespace UdemyAPI.Models
 
         public int CategoryId { get; set; }
         public virtual Category Category { set; get; }
-        public ICollection<Topic> Topics { set; get; }
+        public virtual ICollection<Topic> Topics { set; get; }
 
 
     }

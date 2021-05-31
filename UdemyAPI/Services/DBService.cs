@@ -112,19 +112,23 @@ namespace UdemyAPI.Services
         {
             return _db.Courses.Where(col => col.TopId == id).ToList();
         }
-
         
-        public int GetSortedCoursesRelatedToTopic(int courseId)
+        public IEnumerable<IGrouping<int, StdCr>> GetSortedCoursesRelatedToTopic(int topId)
         {
-            
-            List<StdCr> foundStdCrs = _db.StdCrs.Where(obj => obj.CrsId == courseId).ToList();
 
-            return foundStdCrs.Count;
+            //List<StdCr> foundStdCrs = _db.StdCrs.Where(obj => obj.CrsId == courseId).ToList();
 
+            IEnumerable<IGrouping<int, StdCr>> StudentInCourse = _db.StdCrs.Where(obj=>obj.Course.TopId == topId).OrderByDescending(o => o.Course.studentCourses.Count()).AsEnumerable().GroupBy(obj => obj.CrsId);
+
+            //IEnumerable<IGrouping<int,StdCr>> StudentInCourse = _db.StdCrs.AsEnumerable().GroupBy(obj => obj.CrsId);
+           
+            //var StudentInCourse = (IEnumerable<StdCr>)_db.StdCrs.GroupBy(obj => obj.CrsId).Select(obj => obj);
+
+            return StudentInCourse;
 
         }
 
-        public List<StdCr> GetAllStudentCouses()
+        public List<StdCr> GetAllStudentCourses()
         {
             return _db.StdCrs.ToList();
         }

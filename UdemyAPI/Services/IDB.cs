@@ -22,7 +22,8 @@ namespace UdemyAPI.Services
 
         List<Admin> GetAllAdmins();
 
-        int GetSortedCoursesRelatedToTopic(int courseId);
+        IEnumerable<IGrouping<int, StdCr>> GetSortedCoursesRelatedToTopic(int topId);
+
     //  List<SupCateg> GetSupCategoriesById(int id);
 
         List<Topic> GetTopicsBySupCategId(int id);
@@ -52,14 +53,7 @@ namespace UdemyAPI.Services
 
         public Category GetCategoryById(int id);
 
-        public List<StdCr> GetAllStudentCouses();
-
-        
-
-        
-      
-        
-        
+        public List<StdCr> GetAllStudentCourses();
 
     }
 }

@@ -260,7 +260,7 @@ namespace UdemyAPI.Models
 
                 entity.ToTable("Student");
 
-                entity.Property(e => e.StdId).HasColumnName("std_Id");
+                entity.Property(e => e.StdId).HasColumnName("Std_Id");
 
                 entity.Property(e => e.Fname)
                     .IsRequired()
