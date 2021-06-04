@@ -50,6 +50,14 @@ namespace UdemyAPI.Controllers
             return Ok(_db.GetSortedCoursesRelatedToTopic(id));
            ///return _db.GetSortedCoursesRelatedToTopic(id);           
         }
+        [HttpGet]
+        public IActionResult GetTopCoursesbyStudents(int topicId)
+        {
+            List<Course> data = _db.getSortedCoursesUsingLazy(topicId);
+            if (data.Count <= 0)
+                return BadRequest();
+            return Ok(data);
+        }
 
 
     }

@@ -123,6 +123,9 @@ namespace UdemyAPI.Migrations
                     b.Property<string>("Author")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("CardId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -159,11 +162,12 @@ namespace UdemyAPI.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasDefaultValueSql("(N'')");
 
-                    b.Property<int>("TopId")
-                        .HasColumnType("int")
-                        .HasColumnName("Top_Id");
+                    b.Property<int?>("TopId")
+                        .HasColumnType("int");
 
                     b.HasKey("CrsId");
+
+                    b.HasIndex("CardId");
 
                     b.HasIndex("TopId");
 
@@ -197,14 +201,15 @@ namespace UdemyAPI.Migrations
                     b.Property<int>("InstId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Inst_Id")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("Inst_Id");
 
                     b.Property<int>("CrsId")
                         .HasColumnType("int")
                         .HasColumnName("Crs_Id");
 
                     b.HasKey("InstId", "CrsId");
+
+                    b.HasIndex("CrsId");
 
                     b.ToTable("Inst_Crs");
                 });
@@ -297,6 +302,32 @@ namespace UdemyAPI.Migrations
                     b.HasKey("QuestionId");
 
                     b.ToTable("Question");
+                });
+
+            modelBuilder.Entity("UdemyAPI.Models.ShoppingCard", b =>
+                {
+                    b.Property<int>("CardId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("InstId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StdId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CardId");
+
+                    b.HasIndex("InstId")
+                        .IsUnique()
+                        .HasFilter("[InstId] IS NOT NULL");
+
+                    b.HasIndex("StdId")
+                        .IsUnique()
+                        .HasFilter("[StdId] IS NOT NULL");
+
+                    b.ToTable("ShoppingCards");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.StdCr", b =>
@@ -465,19 +496,58 @@ namespace UdemyAPI.Migrations
 
                     b.HasKey("VidId");
 
+                    b.HasIndex("CrsId");
+
                     b.ToTable("Video");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.Course", b =>
                 {
+                    b.HasOne("UdemyAPI.Models.ShoppingCard", "ShoppingCard")
+                        .WithMany("Courses")
+                        .HasForeignKey("CardId");
+
                     b.HasOne("UdemyAPI.Models.Topic", "Top")
                         .WithMany("Courses")
-                        .HasForeignKey("TopId")
-                        .HasConstraintName("FK_Course_Topic")
+                        .HasForeignKey("TopId");
+
+                    b.Navigation("ShoppingCard");
+
+                    b.Navigation("Top");
+                });
+
+            modelBuilder.Entity("UdemyAPI.Models.InstCr", b =>
+                {
+                    b.HasOne("UdemyAPI.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CrsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Top");
+                    b.HasOne("UdemyAPI.Models.Instructor", "Instructor")
+                        .WithMany("InstCrs")
+                        .HasForeignKey("InstId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Instructor");
+                });
+
+            modelBuilder.Entity("UdemyAPI.Models.ShoppingCard", b =>
+                {
+                    b.HasOne("UdemyAPI.Models.Instructor", "Instructor")
+                        .WithOne("ShoppingCard")
+                        .HasForeignKey("UdemyAPI.Models.ShoppingCard", "InstId");
+
+                    b.HasOne("UdemyAPI.Models.Student", "Student")
+                        .WithOne("ShoppingCard")
+                        .HasForeignKey("UdemyAPI.Models.ShoppingCard", "StdId");
+
+                    b.Navigation("Instructor");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.StdCr", b =>
@@ -521,6 +591,17 @@ namespace UdemyAPI.Migrations
                     b.Navigation("supCateg");
                 });
 
+            modelBuilder.Entity("UdemyAPI.Models.Video", b =>
+                {
+                    b.HasOne("UdemyAPI.Models.Course", "Course")
+                        .WithMany("CourseVideos")
+                        .HasForeignKey("CrsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
             modelBuilder.Entity("UdemyAPI.Models.Category", b =>
                 {
                     b.Navigation("SupCategs");
@@ -528,11 +609,27 @@ namespace UdemyAPI.Migrations
 
             modelBuilder.Entity("UdemyAPI.Models.Course", b =>
                 {
+                    b.Navigation("CourseVideos");
+
                     b.Navigation("studentCourses");
+                });
+
+            modelBuilder.Entity("UdemyAPI.Models.Instructor", b =>
+                {
+                    b.Navigation("InstCrs");
+
+                    b.Navigation("ShoppingCard");
+                });
+
+            modelBuilder.Entity("UdemyAPI.Models.ShoppingCard", b =>
+                {
+                    b.Navigation("Courses");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.Student", b =>
                 {
+                    b.Navigation("ShoppingCard");
+
                     b.Navigation("StudentCourses");
                 });
 

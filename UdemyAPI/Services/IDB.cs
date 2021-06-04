@@ -8,8 +8,6 @@ namespace UdemyAPI.Services
 {
     public interface IDB
     {
-        //-------------ListsArea-------------
-
         List<Category> GetAllCategories();
 
         List<Topic> GetAllTopics();
@@ -24,19 +22,15 @@ namespace UdemyAPI.Services
 
         IEnumerable<IGrouping<int, StdCr>> GetSortedCoursesRelatedToTopic(int topId);
 
-    //  List<SupCateg> GetSupCategoriesById(int id);
+        List<SupCateg> GetSupCategoriesById(int id);
 
         List<Topic> GetTopicsBySupCategId(int id);
 
         List<Course> GetCoursesByTopicId(int id);
         
-
-        //---------------Add-----------------
-
         Instructor AddInstructor(Instructor s);
 
         Student AddStudent(Student s);
-        //-----------------------GetBy---------------
 
         public Course GetCourseById(int id);
     
@@ -54,6 +48,13 @@ namespace UdemyAPI.Services
         public Category GetCategoryById(int id);
 
         public List<StdCr> GetAllStudentCourses();
+
+        public List<Course> getSortedCoursesUsingLazy(int topic);
+
+        public Instructor GetInstructorByMail(string mail);
+        public Student GetStudentByMail(string mail);
+        
+    
 
     }
 }

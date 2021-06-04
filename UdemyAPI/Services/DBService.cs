@@ -14,58 +14,43 @@ namespace UdemyAPI.Services
         {
             _db = db;
         }
-
-      
-        //-------------Get(List)Area-----------------
-        //1
         public List<Category> GetAllCategories()
         {
             return _db.Categories.ToList();
         }
-        //2
         public List<Topic> GetAllTopics()
         {
             
            return _db.Topics.ToList();
         }
       
-        //3
         public List<Course> GetAllCourses()
         {
             return _db.Courses.ToList();
         }
-        //4
         public List<Instructor> GetAllInstructors()
         {
             return _db.Instructors.ToList();
         }
-        //5
         public List<Student> GetAllStudents()
         {
             return _db.Students.ToList();
         }
-        //6
         public List<Admin> GetAllAdmins()
         {
             return _db.Admins.ToList();
         }
-        //13
-        //public List<SupCateg> GetSupCategoriesById(int id)
-        //{
-        //    return _db.SupCategs.Where(obj=>obj.CategoryId==id).ToList(); 
-        //}
+        public List<SupCateg> GetSupCategoriesById(int id)
+        {
+            return _db.SupCategs.Where(obj => obj.CategoryId == id).ToList();
+        }
 
-
-        //-------------------PostArea----------
-        //7
         public Instructor AddInstructor(Instructor s)
         {    // s.Password=>Hash
             _db.Instructors.Add(s);
             _db.SaveChanges();
             return s;
         }
-
-        //8
         public Student AddStudent(Student s)
         {
             // s.Password=>Hash
@@ -73,30 +58,23 @@ namespace UdemyAPI.Services
             _db.SaveChanges();
             return s;
         }
-
-        //---------Get(By:Searching)Area------------------
-        //9
         public Course GetCourseById(int id)
         {
-            return _db.Courses.FirstOrDefault(obj => obj.CrsId == id);
+           return _db.Courses.FirstOrDefault(obj => obj.CrsId == id);
         }
-        //10
         public Course GetCourseByTitle(string title)
         {
-            return _db.Courses.FirstOrDefault(obj => obj.Title == title);
+           
+             return   _db.Courses.FirstOrDefault(obj => obj.Title == title);
         }
-        //11
         public Instructor GetInstructorById(int id)
         {
             return _db.Instructors.FirstOrDefault(obj => obj.InstId == id);
         }
-        //12
         public Instructor GetInstructorByName(string name)
         {
             return _db.Instructors.FirstOrDefault(obj => obj.Fname == name || obj.Lname == name);
         }
-
-        //14 
         public Category GetCategoryById(int id)
         {
             return _db.Categories.Find(id);
@@ -109,8 +87,8 @@ namespace UdemyAPI.Services
         }
 
         public List<Course> GetCoursesByTopicId(int id)
-        {
-            return _db.Courses.Where(col => col.TopId == id).ToList();
+        {    
+          return _db.Courses.Where(col => col.TopId == id).ToList();
         }
         
         public IEnumerable<IGrouping<int, StdCr>> GetSortedCoursesRelatedToTopic(int topId)
@@ -118,13 +96,19 @@ namespace UdemyAPI.Services
 
             //List<StdCr> foundStdCrs = _db.StdCrs.Where(obj => obj.CrsId == courseId).ToList();
 
-            IEnumerable<IGrouping<int, StdCr>> StudentInCourse = _db.StdCrs.Where(obj=>obj.Course.TopId == topId).OrderByDescending(o => o.Course.studentCourses.Count()).AsEnumerable().GroupBy(obj => obj.CrsId);
+            IEnumerable<IGrouping<int, StdCr>> StudentInCourse =
+                _db.StdCrs.Where(obj => obj.Course.TopId == topId).
+                OrderByDescending(o => o.Course.studentCourses.Count()).
+                AsEnumerable().GroupBy(obj => obj.CrsId);
+
+
 
             //IEnumerable<IGrouping<int,StdCr>> StudentInCourse = _db.StdCrs.AsEnumerable().GroupBy(obj => obj.CrsId);
-           
+
             //var StudentInCourse = (IEnumerable<StdCr>)_db.StdCrs.GroupBy(obj => obj.CrsId).Select(obj => obj);
 
-            return StudentInCourse;
+           return StudentInCourse;
+          
 
         }
 
@@ -157,13 +141,23 @@ namespace UdemyAPI.Services
         {
             List<Course> courses = _db.Courses.Where(obj => obj.Title.Contains(title)).ToList();
             return courses;
+
         }
 
+        public List<Course> getSortedCoursesUsingLazy(int topic)
+        {
+            return _db.Courses.Where(obj => obj.TopId == topic).OrderByDescending(o => o.studentCourses.Count).ToList();
+           
+        }
 
+        public Instructor GetInstructorByMail(string mail)
+        {
+            return _db.Instructors.FirstOrDefault(i => i.Mail == mail);
+        }
 
-
-        //--------------CustomCases------------------------
-
-
+        public Student GetStudentByMail(string mail)
+        {
+            return _db.Students.FirstOrDefault(s => s.Mail == mail);
+        }
     }
 }

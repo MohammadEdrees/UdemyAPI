@@ -40,7 +40,7 @@ namespace UdemyAPI
             services.AddDbContext<UdemyContext>(options =>
             {
                 options.UseLazyLoadingProxies().UseSqlServer("Server=.;Database=Udemy;Trusted_Connection=True;");
-
+                
             });
             services.AddTransient<IDB, DBService>();
             services.AddCors(c =>

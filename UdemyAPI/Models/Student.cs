@@ -30,5 +30,7 @@ namespace UdemyAPI.Models
         public string Address { get; set; }
         public virtual ICollection<StdCr> StudentCourses { set; get; }
 
+       public virtual ShoppingCard ShoppingCard { set; get; }
+
     }
 }

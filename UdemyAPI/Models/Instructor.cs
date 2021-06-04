@@ -6,8 +6,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace UdemyAPI.Models
 {
+    
     public partial class Instructor
     {
+        public Instructor()
+        {
+            InstCrs = new HashSet<InstCr>();
+        }
+
         public int InstId { get; set; }
 
         [MaxLength(50,ErrorMessage = "Can't Exceed 50 character")]
@@ -25,6 +31,7 @@ namespace UdemyAPI.Models
         [RegularExpression(@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" +
          @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" +
          @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$", ErrorMessage = "Not Valid Email")]
+        
 
         public string Mail { get; set; }
 
@@ -45,5 +52,9 @@ namespace UdemyAPI.Models
        
         [MaxLength(100, ErrorMessage = "Can't Exceed 100 character")]
         public string Biography { get; set; }
+
+        public virtual ShoppingCard ShoppingCard { set; get; }
+
+        public virtual ICollection<InstCr> InstCrs { set; get; }
     }
 }

@@ -20,18 +20,19 @@ namespace UdemyAPI.Controllers
             _db = db;
         }
 
-        //[HttpGet]
-        //public ActionResult<ICollection<SupCateg>> GetSupCategoryByCategoryId(int id){
-        //    List<SupCateg> supCategs = _db.GetSupCategoriesById(id);
-        //    if (supCategs.Count > 0)
-        //    {
-        //        return supCategs;
-        //    }
-        //    else
-        //    {
-        //        return BadRequest();
-        //    }
-        //  }  
+        [HttpGet]
+        public ActionResult<ICollection<SupCateg>> GetSupCategoryByCategoryId(int id)
+        {
+            List<SupCateg> supCategs = _db.GetSupCategoriesById(id);
+            if (supCategs.Count > 0)
+            {
+                return supCategs;
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
 
     }
 }

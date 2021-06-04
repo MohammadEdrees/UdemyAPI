@@ -11,9 +11,7 @@ namespace UdemyAPI.Models
         public int CrsId { get; set; }
         public int? Grade { get; set; }
         public string Certificate { get; set; }
-
         public virtual Course Course { get; set; }
-
         public virtual Student Student { get; set; }
 
     }

@@ -32,6 +32,7 @@ namespace UdemyAPI.Models
         public virtual DbSet<Topic> Topics { get; set; }
         public virtual DbSet<Video> Videos { get; set; }
         public virtual DbSet<SupCateg> SupCategs { get; set; }
+        public virtual DbSet<ShoppingCard> ShoppingCards { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -40,11 +41,17 @@ namespace UdemyAPI.Models
                 optionsBuilder.UseSqlServer("Server=.;Database=Udemy;Trusted_Connection=True;");
             }
         }
-        // relation - Student - stdCrs - Course   -- Done 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+                    
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
+            modelBuilder.Entity<ShoppingCard>( ent =>
+                {
+                    ent.HasOne(obj => obj.Student).WithOne(obj => obj.ShoppingCard);
+                    ent.HasOne(obj => obj.Instructor).WithOne(obj => obj.ShoppingCard);
+                });
 
             modelBuilder.Entity<SupCateg>(ent =>
             {
@@ -53,6 +60,7 @@ namespace UdemyAPI.Models
                 //ent.HasMany(e => e.Topics).WithOne(e => e.supCateg);
 
             });
+
             modelBuilder.Entity<Admin>(entity =>
             {
                 entity.ToTable("Admin");
@@ -132,12 +140,14 @@ namespace UdemyAPI.Models
                     .HasMaxLength(50)
                     .HasDefaultValueSql("(N'')");
 
-                entity.Property(e => e.TopId).HasColumnName("Top_Id");
-
                 entity.HasOne(d => d.Top)
                     .WithMany(p => p.Courses)
-                    .HasForeignKey(d => d.TopId)
-                    .HasConstraintName("FK_Course_Topic");
+                    .HasForeignKey(d => d.TopId);
+
+                entity.HasOne(o => o.ShoppingCard)
+                .WithMany(o => o.Courses)
+                .HasForeignKey(o => o.CardId);
+
             });
 
             modelBuilder.Entity<Exam>(entity =>
@@ -166,6 +176,7 @@ namespace UdemyAPI.Models
                     .HasColumnName("Inst_Id");
 
                 entity.Property(e => e.CrsId).HasColumnName("Crs_Id");
+                
             });
 
             modelBuilder.Entity<Instructor>(entity =>
@@ -295,16 +306,12 @@ namespace UdemyAPI.Models
                 entity.Property(e => e.TopId).HasColumnName("Top_Id");
 
                 entity.Property(e => e.SupCatId).HasColumnName("SupCat_Id");
-               // entity.Property(e => e.CategId).HasColumnName("Categ_Id");
 
                 entity.Property(e => e.TopName)
                     .HasMaxLength(50)
                     .HasColumnName("Top_Name");
                 entity.HasOne(obj => obj.supCateg).WithMany(obj => obj.Topics).HasForeignKey(obj => obj.SupCatId);
-                //entity.HasOne(d => d.Categ)
-                //    .WithMany(p => p.Topics)
-                //    .HasForeignKey(d => d.CategId)
-                //    .HasConstraintName("FK_Topic_Category");
+
             });
 
             modelBuilder.Entity<Video>(entity =>
@@ -322,6 +329,8 @@ namespace UdemyAPI.Models
                 entity.Property(e => e.Title)
                     .IsRequired()
                     .HasMaxLength(50);
+                entity.HasOne(o => o.Course).WithMany(obj => obj.CourseVideos).HasForeignKey(o=>o.CrsId);
+
             });
 
             OnModelCreatingPartial(modelBuilder);

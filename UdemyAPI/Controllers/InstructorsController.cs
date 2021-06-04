@@ -35,13 +35,20 @@ namespace UdemyAPI.Controllers
 
         }
         [HttpPost]
-        public ActionResult<Instructor> InstructorRegistration(Instructor ins)
+        public ActionResult InstructorRegistration(Instructor ins)
         {
+            //if mail exists error
+            //getInstructorby Mail
+            if (ins == null)
+                return BadRequest();
+            //GeInsBy mail 
+            if (_db.GetInstructorByMail(ins.Mail) != null)
+                return BadRequest("Mail is Exists Try another one ");//400
+
             if (ModelState.IsValid)
             {
-                _db.AddInstructor(ins);
-                return (ins);
-
+                
+                return Ok(_db.AddInstructor(ins));
             }
             else {
                 return BadRequest();
