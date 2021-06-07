@@ -14,7 +14,6 @@ namespace UdemyAPI.Models
 
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
-
         public virtual ICollection<SupCateg> SupCategs { get; set; }
         
     }

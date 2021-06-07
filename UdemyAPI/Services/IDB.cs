@@ -32,28 +32,27 @@ namespace UdemyAPI.Services
 
         Student AddStudent(Student s);
 
-        public Course GetCourseById(int id);
+         Course GetCourseById(int id);
     
-        public Course GetCourseByTitle(string title);
-        public List<Category> GetSomeCategoriesByTitle(string title);
-        public List<SupCateg> GetSomeSupCategsByTitle(string title);
-        public List<Topic> GetSomeTopicsByTitle(string title);
-        public List<Instructor> GetSomeInstructorsByTitle(string title);
-        public List<Course> GetSomeCoursesByTitle(string title);
+         Course GetCourseByTitle(string title);
+         List<Category> GetSomeCategoriesByTitle(string title);
+         List<SupCateg> GetSomeSupCategsByTitle(string title);
+         List<Topic> GetSomeTopicsByTitle(string title);
+         List<Instructor> GetSomeInstructorsByTitle(string title);
+         List<Course> GetSomeCoursesByTitle(string title);
 
-        public Instructor GetInstructorById(int id);
-  
-        public Instructor GetInstructorByName(string name);
+         Instructor GetInstructorById(int id);
+         Instructor GetInstructorByName(string name);
+         Category GetCategoryById(int id);
+         List<StdCr> GetAllStudentCourses();
+         List<Course> getSortedCoursesUsingLazy(int topic);
+         Instructor GetInstructorByMail(string mail);
+         Student GetStudentByMail(string mail);
+         Student GetStudentById(int id);
+         void RemoveStudent(Student s);
+         Student EditStudent(Student s1,Student s2);
 
-        public Category GetCategoryById(int id);
-
-        public List<StdCr> GetAllStudentCourses();
-
-        public List<Course> getSortedCoursesUsingLazy(int topic);
-
-        public Instructor GetInstructorByMail(string mail);
-        public Student GetStudentByMail(string mail);
-        
+          Task<object> Login(UserModel user);
     
 
     }

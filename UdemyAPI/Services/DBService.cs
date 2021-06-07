@@ -159,5 +159,54 @@ namespace UdemyAPI.Services
         {
             return _db.Students.FirstOrDefault(s => s.Mail == mail);
         }
+
+        public void RemoveStudent(Student s)
+        {
+            if (s != null)
+                _db.Students.Remove(s);
+                _db.SaveChanges();
+        }
+
+        public Student GetStudentById(int id)
+        {
+            return _db.Students.FirstOrDefault(s => s.StdId == id);
+
+        }
+
+        public Student EditStudent(Student OldStd, Student newS)
+        {
+            
+          //  _db.Entry(newS).State = EntityState.Modified;
+             OldStd.Fname = newS.Fname;
+             OldStd.Lname = newS.Lname;
+             OldStd.Mail = newS.Mail;
+             OldStd.Password = newS.Password;
+             OldStd.Phone = newS.Phone;
+             OldStd.ShoppingCard = newS.ShoppingCard;
+             OldStd.StudentCourses = newS.StudentCourses;
+             OldStd.Address = newS.Address;
+            _db.SaveChanges();
+            return OldStd;
+        }
+
+        public async Task<object> Login(UserModel user)
+        {
+           Student student = await _db.Students.FirstOrDefaultAsync(obj => obj.Mail == user.Mail &&
+           obj.Password==user.Password 
+                     );
+            
+            if (student == null)
+            {
+                Instructor instructor = await _db.Instructors.FirstOrDefaultAsync(obj => obj.Mail == user.Mail &&
+                obj.Password == user.Password
+                    );
+                return instructor;
+            }
+            else
+            {
+                return student;
+            }
+
+        }
     }
 }
