@@ -124,6 +124,7 @@ namespace UdemyAPI.Controllers
 
             if (_file !=null)
             {
+                
                 string fileName = Path.GetFileNameWithoutExtension(_file.FileName);
                 string extension = Path.GetExtension(_file.FileName);
                 //save to db 
