@@ -117,20 +117,20 @@ namespace UdemyAPI.Controllers
         [RequestFormLimits(MultipartBodyLengthLimit = 204857600)]
         public async Task<IActionResult> Upload(IFormFile _file)
         {
-          //  var auth = new FirebaseAuthProvider(new FirebaseConfig("AIzaSyD0MQz8q3CFW16JRY11lHctKPSShXxhs7Q"));
-           // var a = await auth.SignInWithEmailAndPasswordAsync("medoenoch@gmail.com", "newstart2020");
+            //  var auth = new FirebaseAuthProvider(new FirebaseConfig("AIzaSyD0MQz8q3CFW16JRY11lHctKPSShXxhs7Q"));
+            // var a = await auth.SignInWithEmailAndPasswordAsync("medoenoch@gmail.com", "newstart2020");
             //var a = await auth.sig("medoenoch@gmail.com", "newstart2020");
-            
 
-            if (_file !=null)
+
+            if (_file != null)
             {
-                
+
                 string fileName = Path.GetFileNameWithoutExtension(_file.FileName);
                 string extension = Path.GetExtension(_file.FileName);
                 //save to db 
-               // fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
-                fileName = fileName  + extension;
-                using (var fileStream = new FileStream(Path.Combine("Images/"+fileName), FileMode.Create))
+                // fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+                fileName = fileName + extension;
+                using (var fileStream = new FileStream(Path.Combine("Images/" + fileName), FileMode.Create))
                 {
                     await _file.CopyToAsync(fileStream);
                 }
@@ -145,7 +145,7 @@ namespace UdemyAPI.Controllers
                 // string path = Path.Combine("Images/",$"{fileName}");
                 fs = new FileStream(Path.Combine("Images/" + fileName), FileMode.Open);
                 //----
-                var auth= new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+                var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
                 var a = await auth.SignInWithEmailAndPasswordAsync(AuthMail, Password);
 
                 var cancellation = new CancellationTokenSource();
@@ -160,15 +160,18 @@ namespace UdemyAPI.Controllers
                     .Child($"{_file.FileName}")
                     .PutAsync(fs, cancellation.Token);
                 //--------------------------------------------
-                
-                var downloadUrl = await upload;
-                return Ok(downloadUrl);
-                }
 
-             else
-             {
-                 return NotFound("Error");
-             }  
+                var downloadUrl = await upload;
+                string str = downloadUrl;
+                var url = new Uri(str);
+
+                return Ok(url);
+
+            }
+            else
+            {
+                return NotFound("Error");
+            }  
          }
         /*
          
