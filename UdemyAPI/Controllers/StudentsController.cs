@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Firebase.Auth;
+using Firebase.Storage;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -6,9 +8,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using UdemyAPI.Models;
 using UdemyAPI.Services;
+
 
 namespace UdemyAPI.Controllers
 {
@@ -17,7 +21,11 @@ namespace UdemyAPI.Controllers
     public class StudentsController : ControllerBase
     {
         IDB _db;
-        public static IHostingEnvironment _environment;
+        private static string ApiKey = "AIzaSyD0MQz8q3CFW16JRY11lHctKPSShXxhs7Q";
+        private static string Bucket = "udemy-3c633.appspot.com";
+        private static string AuthMail = "medoenoch@gmail.com";
+        private static string Password = "newstart2020";
+        
         public StudentsController(IDB db)
         {
             _db = db;
@@ -41,6 +49,7 @@ namespace UdemyAPI.Controllers
 
             if (ModelState.IsValid)
             {
+
                  return Ok(_db.AddStudent(s));
             }
             else
@@ -108,30 +117,73 @@ namespace UdemyAPI.Controllers
         [RequestFormLimits(MultipartBodyLengthLimit = 204857600)]
         public async Task<IActionResult> Upload(IFormFile _file)
         {
-            if (_file != null)
+          //  var auth = new FirebaseAuthProvider(new FirebaseConfig("AIzaSyD0MQz8q3CFW16JRY11lHctKPSShXxhs7Q"));
+           // var a = await auth.SignInWithEmailAndPasswordAsync("medoenoch@gmail.com", "newstart2020");
+            //var a = await auth.sig("medoenoch@gmail.com", "newstart2020");
+            
+
+            if (_file !=null)
             {
+                string fileName = Path.GetFileNameWithoutExtension(_file.FileName);
+                string extension = Path.GetExtension(_file.FileName);
+                //save to db 
+               // fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+                fileName = fileName  + extension;
+                using (var fileStream = new FileStream(Path.Combine("Images/"+fileName), FileMode.Create))
+                {
+                    await _file.CopyToAsync(fileStream);
+                }
+                //-------------------------------------------------------------------
+                //string path = Path.Combine("Images/", fileName);
                 //only image
                 //Vids
                 //save to folder
                 //save to cloud 
                 //--------------------
-                string fileName = Path.GetFileNameWithoutExtension(_file.FileName);
-                string extension = Path.GetExtension(_file.FileName);
-                //save to db 
-                fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
-                string path = Path.Combine("Images/", fileName);
-                using (var fileStream = new FileStream(path, FileMode.Create))
-                {
-                    await _file.CopyToAsync(fileStream);
+                FileStream fs;
+                // string path = Path.Combine("Images/",$"{fileName}");
+                fs = new FileStream(Path.Combine("Images/" + fileName), FileMode.Open);
+                //----
+                var auth= new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+                var a = await auth.SignInWithEmailAndPasswordAsync(AuthMail, Password);
+
+                var cancellation = new CancellationTokenSource();
+
+                var upload = new FirebaseStorage(Bucket,
+                    new FirebaseStorageOptions
+                    {
+                        AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken)
+                        ,
+                        ThrowOnCancel = true
+                    }).Child("data")
+                    .Child($"{_file.FileName}")
+                    .PutAsync(fs, cancellation.Token);
+                //--------------------------------------------
+                
+                var downloadUrl = await upload;
+                return Ok(downloadUrl);
                 }
-                return Ok("Saved To Images");
-            }
-            else
-            {
-                return NotFound("Error");
-            }
-        }
+
+             else
+             {
+                 return NotFound("Error");
+             }  
+         }
         /*
+         
+         String downloadUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
+          Firestore.instance.collection('images').add({"url": downloadUrl});
+           }
+
+         
+         
+         
+         
+         
+         
+         
+         
+         * 
          [HttpPost]
          [ValidateAntiForgeryToken]
          [RequestFormLimits(MultipartBodyLengthLimit = 204857600)]
