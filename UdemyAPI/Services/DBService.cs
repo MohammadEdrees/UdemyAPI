@@ -147,7 +147,6 @@ namespace UdemyAPI.Services
         public List<Course> getSortedCoursesUsingLazy(int topic)
         {
             return _db.Courses.Where(obj => obj.TopId == topic).OrderByDescending(o => o.studentCourses.Count).ToList();
-           
         }
 
         public Instructor GetInstructorByMail(string mail)
@@ -209,11 +208,29 @@ namespace UdemyAPI.Services
 
         }
 
-        public IEnumerable<Course> GetAllCoursesInOneCategory(int categId)
+
+        public List<Category> GetTop8Categories()
         {
             //get all students in one categoy sorted by count std
            // _db.Students.Where(obj=>obj.)
 
+            List<Category> categories = new List<Category>();
+
+            List<Course> courses = _db.Courses.OrderByDescending(o => o.studentCourses.Count).ToList();
+
+            IEnumerable<IGrouping<int,Course>> StudentInCourse = courses.AsEnumerable().GroupBy(obj => obj.Top.supCateg.Category.CategoryId);
+
+            foreach(var item in StudentInCourse)
+            {
+                Category category = _db.Categories.FirstOrDefault(obj => obj.CategoryId == item.Key);
+                categories.Add(category);
+            }
+
+            return categories;
+        }
+
+        public IEnumerable<Course> GetAllCoursesInOneCategory(int categId)
+        {
             //-------------------------------------------------
             //
             List<Course> CollectionOfcrss = new List<Course>();
@@ -228,8 +245,8 @@ namespace UdemyAPI.Services
             {
                 List<Course> crsz = _db.Courses.Where(obj=>obj.TopId==item.TopId).ToList();
                 CollectionOfcrss.AddRange(crsz);
-
             }
+
             //All courses where supcateg 
 
 
