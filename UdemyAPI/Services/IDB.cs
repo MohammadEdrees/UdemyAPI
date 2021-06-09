@@ -52,7 +52,9 @@ namespace UdemyAPI.Services
          void RemoveStudent(Student s);
          Student EditStudent(Student s1,Student s2);
 
-    
+        Task<object> Login(UserModel user);
+        IEnumerable<Course> GetAllCoursesInOneCategory(int categId);
+        List<Category> GetTop8Categories();
 
     }
 }

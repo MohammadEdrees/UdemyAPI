@@ -211,25 +211,24 @@ namespace UdemyAPI.Services
 
         public List<Category> GetTop8Categories()
         {
-            
-            //students Counts in one category
 
-            //List<Course> courses = new List<Course>();
-            //List<Topic> topics = _db.Topics.ToList();
-            //foreach (Topic item in topics)
-            //{
-            //    List<Course> coursesInOneTopic = getSortedCoursesUsingLazy(item.TopId);
-            //    courses.AddRange(coursesInOneTopic);
-            //}
-            //List<Topic> topics1 = _db.Topics.OrderByDescending(o => o.)
+            List<Category> categories = new List<Category>();
 
-            List<Category> categories = _db.Categories.Take(8).ToList();
-            return null;
+            List<Course> courses = _db.Courses.OrderByDescending(o => o.studentCourses.Count).ToList();
+
+            IEnumerable<IGrouping<int,Course>> StudentInCourse = courses.AsEnumerable().GroupBy(obj => obj.Top.supCateg.Category.CategoryId);
+
+            foreach(var item in StudentInCourse)
+            {
+                Category category = _db.Categories.FirstOrDefault(obj => obj.CategoryId == item.Key);
+                categories.Add(category);
+            }
+
+            return categories;
         }
 
         public IEnumerable<Course> GetAllCoursesInOneCategory(int categId)
         {
-
             //-------------------------------------------------
             //
             List<Course> CollectionOfcrss = new List<Course>();
@@ -244,8 +243,8 @@ namespace UdemyAPI.Services
             {
                 List<Course> crsz = _db.Courses.Where(obj=>obj.TopId==item.TopId).ToList();
                 CollectionOfcrss.AddRange(crsz);
-
             }
+
             //All courses where supcateg 
 
 

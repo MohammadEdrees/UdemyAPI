@@ -28,9 +28,13 @@ namespace UdemyAPI.Controllers
             return _db.GetCategoryById(id);
         }
 
-      
-        
-        
+        [HttpGet]
+        public IActionResult GetTop8Categories()
+        {
+            return Ok(_db.GetTop8Categories());
+        }
+
+
 
     }
 }
