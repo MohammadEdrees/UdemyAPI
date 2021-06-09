@@ -147,7 +147,6 @@ namespace UdemyAPI.Services
         public List<Course> getSortedCoursesUsingLazy(int topic)
         {
             return _db.Courses.Where(obj => obj.TopId == topic).OrderByDescending(o => o.studentCourses.Count).ToList();
-           
         }
 
         public Instructor GetInstructorByMail(string mail)
@@ -207,6 +206,25 @@ namespace UdemyAPI.Services
                 return student;
             }
 
+        }
+
+
+        public List<Category> GetTop8Categories()
+        {
+            
+            //students Counts in one category
+
+            //List<Course> courses = new List<Course>();
+            //List<Topic> topics = _db.Topics.ToList();
+            //foreach (Topic item in topics)
+            //{
+            //    List<Course> coursesInOneTopic = getSortedCoursesUsingLazy(item.TopId);
+            //    courses.AddRange(coursesInOneTopic);
+            //}
+            //List<Topic> topics1 = _db.Topics.OrderByDescending(o => o.)
+
+            List<Category> categories = _db.Categories.Take(8).ToList();
+            return null;
         }
     }
 }
