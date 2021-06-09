@@ -211,6 +211,8 @@ namespace UdemyAPI.Services
 
         public IEnumerable<Course> GetAllCoursesInOneCategory(int categId)
         {
+            //get all students in one categoy sorted by count std
+           // _db.Students.Where(obj=>obj.)
 
             //-------------------------------------------------
             //
