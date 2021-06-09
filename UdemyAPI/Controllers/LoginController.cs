@@ -37,5 +37,13 @@ namespace UdemyAPI.Controllers
             }
 
         }
+
+        //[HttpGet("Stream/Url/{*videoUrl}")]
+        //public async Task<FileStreamResult> GetStreamFromUrlAsync(string videoUrl)
+        //{
+        //    var stream = await _streamingService.GetVideoByUrlAsync(videoUrl).ConfigureAwait(false);
+        //    return new FileStreamResult(stream, "video/mp4");
+        //}
+        
     }
 }
