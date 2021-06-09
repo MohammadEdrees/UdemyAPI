@@ -58,6 +58,15 @@ namespace UdemyAPI.Controllers
                 return BadRequest();
             return Ok(data);
         }
+        [HttpGet]
+        public IActionResult GetAllCoursesInOneCateg(int id)
+        {
+            List<Course> data = (List<Course>)_db.GetAllCoursesInOneCategory(id);
+            if (data.Count <= 0)
+                return BadRequest();
+            return Ok(data);
+           
+        }
 
 
     }

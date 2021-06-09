@@ -53,6 +53,7 @@ namespace UdemyAPI.Services
          Student EditStudent(Student s1,Student s2);
 
           Task<object> Login(UserModel user);
+        IEnumerable<Course> GetAllCoursesInOneCategory(int categId); 
     
 
     }

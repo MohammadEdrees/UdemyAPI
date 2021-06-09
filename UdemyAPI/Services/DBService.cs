@@ -208,5 +208,31 @@ namespace UdemyAPI.Services
             }
 
         }
+
+        public IEnumerable<Course> GetAllCoursesInOneCategory(int categId)
+        {
+
+            //-------------------------------------------------
+            //
+            List<Course> CollectionOfcrss = new List<Course>();
+            List<Topic> CollectionOfTopicsinSupCateg = new List<Topic>();
+            List  < SupCateg> supCategs =   _db.SupCategs.Where(obj=>obj.CategoryId==categId).ToList();
+            foreach (SupCateg item in supCategs)
+            {
+                List<Topic> topicsInSupCateg =  _db.Topics.Where(obj => obj.SupCatId == item.SupCatId).ToList();
+                CollectionOfTopicsinSupCateg.AddRange(topicsInSupCateg);    
+            }
+            foreach (Topic item in CollectionOfTopicsinSupCateg)
+            {
+                List<Course> crsz = _db.Courses.Where(obj=>obj.TopId==item.TopId).ToList();
+                CollectionOfcrss.AddRange(crsz);
+
+            }
+            //All courses where supcateg 
+
+
+
+            return CollectionOfcrss; 
+        }
     }
 }
