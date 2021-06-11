@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -11,7 +11,8 @@ namespace UdemyAPI.Models
     {
         public Instructor()
         {
-            InstCrs = new HashSet<InstCr>();
+            courses = new HashSet<Course>();
+          //  InstCrs = new HashSet<InstCr>();
         }
 
         public int InstId { get; set; }
@@ -55,6 +56,7 @@ namespace UdemyAPI.Models
 
         public virtual ShoppingCard ShoppingCard { set; get; }
 
-        public virtual ICollection<InstCr> InstCrs { set; get; }
+        public virtual ICollection<Course> courses { set; get; }
+        //public virtual ICollection<InstCr> InstCrs { set; get; }
     }
 }

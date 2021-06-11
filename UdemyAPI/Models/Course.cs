@@ -43,6 +43,14 @@ namespace UdemyAPI.Models
         public int? CardId { set; get; }
         public virtual ShoppingCard ShoppingCard { set; get; }
 
+        [Column(Order = 2)]
+        [ForeignKey("Instructor")]
+        public int InstId { get; set; }
+
+        public virtual Instructor Instructor { set; get; }
+
+        public double? Price { set; get; }
+
 
     }
 }

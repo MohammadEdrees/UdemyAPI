@@ -245,13 +245,9 @@ namespace UdemyAPI.Services
             {
                 List<Course> crsz = _db.Courses.Where(obj=>obj.TopId==item.TopId).ToList();
                 CollectionOfcrss.AddRange(crsz);
-            }
-
-            //All courses where supcateg 
-
-
-
+            }   
             return CollectionOfcrss; 
         }
     }
 }
+

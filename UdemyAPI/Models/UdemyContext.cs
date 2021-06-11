@@ -23,7 +23,7 @@ namespace UdemyAPI.Models
         public virtual DbSet<Choice> Choices { get; set; }
         public virtual DbSet<Course> Courses { get; set; }
         public virtual DbSet<Exam> Exams { get; set; }
-        public virtual DbSet<InstCr> InstCrs { get; set; }
+        //public virtual DbSet<InstCr> InstCrs { get; set; }
         public virtual DbSet<Instructor> Instructors { get; set; }
         public virtual DbSet<Question> Questions { get; set; }
         public virtual DbSet<StdCr> StdCrs { get; set; }
@@ -142,7 +142,7 @@ namespace UdemyAPI.Models
 
                 entity.HasOne(d => d.Top)
                     .WithMany(p => p.Courses)
-                    .HasForeignKey(d => d.TopId);
+                    .HasForeignKey(d => d.TopId).IsRequired();
 
                 entity.HasOne(o => o.ShoppingCard)
                 .WithMany(o => o.Courses)
@@ -165,19 +165,19 @@ namespace UdemyAPI.Models
                     .HasColumnName("Exam_Name");
             });
 
-            modelBuilder.Entity<InstCr>(entity =>
-            {
-                entity.HasKey(e => new { e.InstId, e.CrsId });
+            //modelBuilder.Entity<InstCr>(entity =>
+            //{
+            //    entity.HasKey(e => new { e.InstId, e.CrsId });
 
-                entity.ToTable("Inst_Crs");
+            //    entity.ToTable("Inst_Crs");
 
-                entity.Property(e => e.InstId)
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("Inst_Id");
+            //    entity.Property(e => e.InstId)
+            //        .ValueGeneratedOnAdd()
+            //        .HasColumnName("Inst_Id");
 
-                entity.Property(e => e.CrsId).HasColumnName("Crs_Id");
+            //    entity.Property(e => e.CrsId).HasColumnName("Crs_Id");
                 
-            });
+            //});
 
             modelBuilder.Entity<Instructor>(entity =>
             {
@@ -210,6 +210,8 @@ namespace UdemyAPI.Models
                     .HasMaxLength(50);
 
                 entity.Property(e => e.Phone).HasMaxLength(50);
+
+                entity.HasMany(obj => obj.courses).WithOne(obj => obj.Instructor).HasForeignKey(obj=>obj.InstId).IsRequired();
             });
 
             modelBuilder.Entity<Question>(entity =>

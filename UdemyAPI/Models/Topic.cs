@@ -18,5 +18,6 @@ namespace UdemyAPI.Models
         public int SupCatId { set; get; }
         public virtual SupCateg supCateg { set; get; }
         public virtual ICollection<Course> Courses { get; set; }
+        public string TopImg { set; get; }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UdemyAPI.Models;
 
 namespace UdemyAPI.Migrations
 {
     [DbContext(typeof(UdemyContext))]
-    partial class UdemyContextModelSnapshot : ModelSnapshot
+    [Migration("20210610221953_OneTMInsCrs")]
+    partial class OneTMInsCrs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -137,7 +139,7 @@ namespace UdemyAPI.Migrations
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("InstId")
+                    b.Property<int?>("InstId")
                         .HasColumnType("int");
 
                     b.Property<string>("Languge")
@@ -449,9 +451,6 @@ namespace UdemyAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("SupCat_Id");
 
-                    b.Property<string>("TopImg")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TopName")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
@@ -503,9 +502,7 @@ namespace UdemyAPI.Migrations
 
                     b.HasOne("UdemyAPI.Models.Instructor", "Instructor")
                         .WithMany("courses")
-                        .HasForeignKey("InstId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("InstId");
 
                     b.HasOne("UdemyAPI.Models.Topic", "Top")
                         .WithMany("Courses")
