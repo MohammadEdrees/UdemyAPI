@@ -12,7 +12,9 @@ namespace UdemyAPI.Models
         public Course()
         {
             studentCourses = new HashSet<StdCr>();
-            CourseVideos = new HashSet<Video>();
+            CourseSections = new HashSet<CourseSection>();
+            CourseInCards = new HashSet<CourseInCard>();
+            // CourseVideos = new HashSet<Video>();
         }
         [Key]
         public int CrsId { get; set; }
@@ -23,7 +25,7 @@ namespace UdemyAPI.Models
         public string Languge { get; set; }
         public string Levels { get; set; }
         public string Subtitle { get; set; }
-        public string Author { get; set; }
+      //  public string Author { get; set; }
         public string ImagePath { get; set; }
         public double Rate { get; set; }
         public string State { get; set; }
@@ -35,21 +37,29 @@ namespace UdemyAPI.Models
         public virtual Topic Top { get; set; }
 
         public virtual ICollection<StdCr> studentCourses { set; get; }
-        public virtual ICollection<Video> CourseVideos { set; get; }
+        public virtual ICollection<CourseSection> CourseSections { set; get; }
+        public virtual ICollection<CourseInCard> CourseInCards { set; get; }
+
+       // [Column(Order = 1)]
+       // [ForeignKey("ShoppingCard")]
+
+       //public int? CardId { set; get; }
+       // public virtual ShoppingCard ShoppingCard { set; get; }
 
         [Column(Order = 1)]
-        [ForeignKey("ShoppingCard")]
-
-        public int? CardId { set; get; }
-        public virtual ShoppingCard ShoppingCard { set; get; }
-
-        [Column(Order = 2)]
         [ForeignKey("Instructor")]
         public int InstId { get; set; }
 
         public virtual Instructor Instructor { set; get; }
 
         public double? Price { set; get; }
+        [Column(Order = 2)]
+        [ForeignKey("Card")]
+        public int? CId { set; get; }
+
+        public virtual Card Card { set; get; }
+
+
 
 
     }

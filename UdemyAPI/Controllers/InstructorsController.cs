@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using UdemyAPI.Services;
 using UdemyAPI.Models;
+using UdemyAPI.Authentication;
+
 
 namespace UdemyAPI.Controllers
 {
@@ -14,10 +16,11 @@ namespace UdemyAPI.Controllers
     public class InstructorsController : ControllerBase
     {
         IDB _db;
-
+       
         public InstructorsController(IDB db)
         {
             _db = db;
+            
         }
 
         //GetInstructors

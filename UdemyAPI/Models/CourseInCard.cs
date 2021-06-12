@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
-#nullable disable
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace UdemyAPI.Models
 {
-    public partial class Video
+    public class CourseInCard
     {
-        public int VidId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public int Duration { get; set; }
         [ForeignKey("Course")]
         public int CrsId { get; set; }
+        [ForeignKey("Card")]
+
+        public int CId { set; get; }
+
         public virtual Course Course { set; get; }
+        public virtual Card Card { set; get; }
+
     }
 }

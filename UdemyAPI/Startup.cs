@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
@@ -10,11 +11,14 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using UdemyAPI.Controllers;
 using UdemyAPI.Models;
 using UdemyAPI.Services;
-
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity;
+using UdemyAPI.Authentication;
 
 namespace UdemyAPI
 {
@@ -32,12 +36,45 @@ namespace UdemyAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
 
             services.AddControllers();
             services.AddControllers().AddNewtonsoftJson(options =>
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
+
+
             services.AddSwaggerDocument();
+           
+            
+            services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(jwt =>
+            {
+                var key = Encoding.ASCII.GetBytes(Configuration["JWT:Secret"]);
+                jwt.SaveToken = true;
+                jwt.RequireHttpsMetadata = false;
+                jwt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"])),
+                    // IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                   // ValidateLifetime = true,
+                    RequireExpirationTime = false
+                };
+            });
+            //services.AddDefaultIdentity<IdentityUser>(o => o.SignIn.RequireConfirmedAccount = true)
+            //    .AddEntityFrameworkStores<UdemyContext>();
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<UdemyContext>()
+                .AddDefaultTokenProviders();
+
+
             services.AddDbContext<UdemyContext>(options =>
             {
                 options.UseLazyLoadingProxies().UseSqlServer("Server=.;Database=Udemy;Trusted_Connection=True;");
@@ -79,6 +116,7 @@ namespace UdemyAPI
 
             app.UseRouting();
             app.UseCors(enableCors);
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

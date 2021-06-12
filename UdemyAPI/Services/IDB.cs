@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,6 +56,9 @@ namespace UdemyAPI.Services
         Task<object> Login(UserModel user);
         IEnumerable<Course> GetAllCoursesInOneCategory(int categId);
         List<Category> GetTop8Categories();
+        object GetToken();
+
+        Task<string> UploadImage(IFormFile img) ;
 
     }
 }

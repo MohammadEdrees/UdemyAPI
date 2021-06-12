@@ -1,6 +1,7 @@
 ﻿    using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 #nullable disable
 
@@ -14,7 +15,8 @@ namespace UdemyAPI.Models
             courses = new HashSet<Course>();
           //  InstCrs = new HashSet<InstCr>();
         }
-
+        [NotMapped]
+        public object token { set; get; }
         public int InstId { get; set; }
 
         [MaxLength(50,ErrorMessage = "Can't Exceed 50 character")]
@@ -54,7 +56,10 @@ namespace UdemyAPI.Models
         [MaxLength(100, ErrorMessage = "Can't Exceed 100 character")]
         public string Biography { get; set; }
 
-        public virtual ShoppingCard ShoppingCard { set; get; }
+       // public virtual ShoppingCard ShoppingCard { set; get; }
+
+        public int ?CId { set; get; }
+        public virtual Card Card { set; get; }
 
         public virtual ICollection<Course> courses { set; get; }
         //public virtual ICollection<InstCr> InstCrs { set; get; }

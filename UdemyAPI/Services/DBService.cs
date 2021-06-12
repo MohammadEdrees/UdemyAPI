@@ -1,15 +1,27 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Firebase.Auth;
+using Firebase.Storage;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UdemyAPI.Models;
+
+
 
 namespace UdemyAPI.Services
 {
     public class DBService : IDB
     {
         UdemyContext _db;
+        private static string ApiKey = "AIzaSyD0MQz8q3CFW16JRY11lHctKPSShXxhs7Q";
+        private static string Bucket = "udemy-3c633.appspot.com";
+        private static string AuthMail = "medoenoch@gmail.com";
+        private static string Password = "newstart2020";
+        
         public DBService(UdemyContext db)
         {
             _db = db;
@@ -51,9 +63,10 @@ namespace UdemyAPI.Services
             _db.SaveChanges();
             return s;
         }
-        public Student AddStudent(Student s)
+        public  Student AddStudent(Student s)
         {
             // s.Password=>Hash
+           // s.ImagePath = await UploadImage(stdImg);
             _db.Students.Add(s);
             _db.SaveChanges();
             return s;
@@ -181,7 +194,7 @@ namespace UdemyAPI.Services
              OldStd.Mail = newS.Mail;
              OldStd.Password = newS.Password;
              OldStd.Phone = newS.Phone;
-             OldStd.ShoppingCard = newS.ShoppingCard;
+           //  OldStd.ShoppingCard = newS.ShoppingCard;
              OldStd.StudentCourses = newS.StudentCourses;
              OldStd.Address = newS.Address;
             _db.SaveChanges();
@@ -247,6 +260,51 @@ namespace UdemyAPI.Services
                 CollectionOfcrss.AddRange(crsz);
             }   
             return CollectionOfcrss; 
+        }
+
+        public object GetToken()
+        {
+            //string key = "secret_Key";
+            //var SecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            //var Credentials = new SigningCredentials(SecurityKey, SecurityAlgorithms.HmacSha256);
+            //var token = new JwtSecurityToken(null,null,null,expires:DateTime.Now.AddDays(2),signingCredentials:Credentials);
+            //var Jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
+
+            //return new { data=Jwt_token };
+            return null;
+        
+        }
+
+     
+        public async Task<string> UploadImage(IFormFile img)
+        {
+            // Firebase Auth
+            var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+            var a = await auth.SignInWithEmailAndPasswordAsync(AuthMail, Password);
+            var cancellation = new CancellationTokenSource();
+            //Stream
+            using (var fileStream = new FileStream(Path.Combine("Images/", img.FileName), FileMode.Create))
+            {
+                await img.CopyToAsync(fileStream);
+            }
+            FileStream fs;
+            fs = new FileStream(Path.Combine("Images/" + img.FileName), FileMode.Open);
+
+            // Firebase Upload
+
+            var upload = new FirebaseStorage(Bucket,
+                new FirebaseStorageOptions
+                {
+                    AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken)
+                    ,
+                    ThrowOnCancel = true
+                }).Child("data")
+                .Child($"{img.FileName}")
+                .PutAsync(fs, cancellation.Token);
+                var downloadUrl = await upload;
+                string str = downloadUrl;
+             //  var url = new Uri(str);
+             return str;
         }
     }
 }

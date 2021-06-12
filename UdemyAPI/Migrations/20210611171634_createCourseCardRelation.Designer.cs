@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UdemyAPI.Models;
 
 namespace UdemyAPI.Migrations
 {
     [DbContext(typeof(UdemyContext))]
-    partial class UdemyContextModelSnapshot : ModelSnapshot
+    [Migration("20210611171634_createCourseCardRelation")]
+    partial class createCourseCardRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,202 +21,6 @@ namespace UdemyAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetRoleClaims");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserClaims");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("LoginProvider", "ProviderKey");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserLogins");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("UdemyAPI.Authentication.ApplicationUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers");
-                });
 
             modelBuilder.Entity("UdemyAPI.Models.Admin", b =>
                 {
@@ -272,32 +78,6 @@ namespace UdemyAPI.Migrations
                     b.ToTable("Admin_Crs");
                 });
 
-            modelBuilder.Entity("UdemyAPI.Models.Card", b =>
-                {
-                    b.Property<int>("CId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("InstId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("StdId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CId");
-
-                    b.HasIndex("InstId")
-                        .IsUnique()
-                        .HasFilter("[InstId] IS NOT NULL");
-
-                    b.HasIndex("StdId")
-                        .IsUnique()
-                        .HasFilter("[StdId] IS NOT NULL");
-
-                    b.ToTable("Card");
-                });
-
             modelBuilder.Entity("UdemyAPI.Models.Category", b =>
                 {
                     b.Property<int>("CategoryId")
@@ -342,7 +122,10 @@ namespace UdemyAPI.Migrations
                         .HasColumnName("Crs_Id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CId")
+                    b.Property<string>("Author")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CardId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -393,28 +176,13 @@ namespace UdemyAPI.Migrations
 
                     b.HasKey("CrsId");
 
-                    b.HasIndex("CId");
+                    b.HasIndex("CardId");
 
                     b.HasIndex("InstId");
 
                     b.HasIndex("TopId");
 
                     b.ToTable("Course");
-                });
-
-            modelBuilder.Entity("UdemyAPI.Models.CourseInCard", b =>
-                {
-                    b.Property<int>("CId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CrsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CId", "CrsId");
-
-                    b.HasIndex("CrsId");
-
-                    b.ToTable("CourseInCards");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.CourseSection", b =>
@@ -426,6 +194,12 @@ namespace UdemyAPI.Migrations
 
                     b.Property<int>("CrsId")
                         .HasColumnType("int");
+
+                    b.Property<string>("LectureLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LectureTitle")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -475,9 +249,6 @@ namespace UdemyAPI.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("CId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Communication")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -521,39 +292,6 @@ namespace UdemyAPI.Migrations
                     b.ToTable("Instructor");
                 });
 
-            modelBuilder.Entity("UdemyAPI.Models.Lecture", b =>
-                {
-                    b.Property<int>("LectureId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("Lecture_Id")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("Duration")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Link")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SectionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("LectureId");
-
-                    b.HasIndex("SectionId");
-
-                    b.ToTable("Lecture");
-                });
-
             modelBuilder.Entity("UdemyAPI.Models.Question", b =>
                 {
                     b.Property<int>("QuestionId")
@@ -583,6 +321,32 @@ namespace UdemyAPI.Migrations
                     b.HasKey("QuestionId");
 
                     b.ToTable("Question");
+                });
+
+            modelBuilder.Entity("UdemyAPI.Models.ShoppingCard", b =>
+                {
+                    b.Property<int>("CardId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("InstId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StdId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CardId");
+
+                    b.HasIndex("InstId")
+                        .IsUnique()
+                        .HasFilter("[InstId] IS NOT NULL");
+
+                    b.HasIndex("StdId")
+                        .IsUnique()
+                        .HasFilter("[StdId] IS NOT NULL");
+
+                    b.ToTable("ShoppingCards");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.StdCr", b =>
@@ -728,77 +492,41 @@ namespace UdemyAPI.Migrations
                     b.ToTable("Topic");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("UdemyAPI.Models.Video", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                    b.Property<int>("VidId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Vid_Id")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("UdemyAPI.Authentication.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                    b.Property<string>("Description")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.HasOne("UdemyAPI.Authentication.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("SectionId")
+                        .HasColumnType("int");
 
-                    b.HasOne("UdemyAPI.Authentication.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("UdemyAPI.Authentication.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                    b.HasKey("VidId");
 
-            modelBuilder.Entity("UdemyAPI.Models.Card", b =>
-                {
-                    b.HasOne("UdemyAPI.Models.Instructor", "Instructor")
-                        .WithOne("Card")
-                        .HasForeignKey("UdemyAPI.Models.Card", "InstId");
+                    b.HasIndex("SectionId");
 
-                    b.HasOne("UdemyAPI.Models.Student", "Student")
-                        .WithOne("Card")
-                        .HasForeignKey("UdemyAPI.Models.Card", "StdId");
-
-                    b.Navigation("Instructor");
-
-                    b.Navigation("Student");
+                    b.ToTable("Video");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.Course", b =>
                 {
-                    b.HasOne("UdemyAPI.Models.Card", "Card")
+                    b.HasOne("UdemyAPI.Models.ShoppingCard", "ShoppingCard")
                         .WithMany("Courses")
-                        .HasForeignKey("CId");
+                        .HasForeignKey("CardId");
 
                     b.HasOne("UdemyAPI.Models.Instructor", "Instructor")
                         .WithMany("courses")
@@ -812,30 +540,11 @@ namespace UdemyAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Card");
-
                     b.Navigation("Instructor");
 
+                    b.Navigation("ShoppingCard");
+
                     b.Navigation("Top");
-                });
-
-            modelBuilder.Entity("UdemyAPI.Models.CourseInCard", b =>
-                {
-                    b.HasOne("UdemyAPI.Models.Card", "Card")
-                        .WithMany("CourseInCards")
-                        .HasForeignKey("CId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("UdemyAPI.Models.Course", "Course")
-                        .WithMany("CourseInCards")
-                        .HasForeignKey("CrsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Card");
-
-                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.CourseSection", b =>
@@ -849,15 +558,19 @@ namespace UdemyAPI.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("UdemyAPI.Models.Lecture", b =>
+            modelBuilder.Entity("UdemyAPI.Models.ShoppingCard", b =>
                 {
-                    b.HasOne("UdemyAPI.Models.CourseSection", "CourseSection")
-                        .WithMany("CourseLecture")
-                        .HasForeignKey("SectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("UdemyAPI.Models.Instructor", "Instructor")
+                        .WithOne("ShoppingCard")
+                        .HasForeignKey("UdemyAPI.Models.ShoppingCard", "InstId");
 
-                    b.Navigation("CourseSection");
+                    b.HasOne("UdemyAPI.Models.Student", "Student")
+                        .WithOne("ShoppingCard")
+                        .HasForeignKey("UdemyAPI.Models.ShoppingCard", "StdId");
+
+                    b.Navigation("Instructor");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.StdCr", b =>
@@ -901,11 +614,15 @@ namespace UdemyAPI.Migrations
                     b.Navigation("supCateg");
                 });
 
-            modelBuilder.Entity("UdemyAPI.Models.Card", b =>
+            modelBuilder.Entity("UdemyAPI.Models.Video", b =>
                 {
-                    b.Navigation("CourseInCards");
+                    b.HasOne("UdemyAPI.Models.CourseSection", "CourseSection")
+                        .WithMany("CourseVideos")
+                        .HasForeignKey("SectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Courses");
+                    b.Navigation("CourseSection");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.Category", b =>
@@ -915,8 +632,6 @@ namespace UdemyAPI.Migrations
 
             modelBuilder.Entity("UdemyAPI.Models.Course", b =>
                 {
-                    b.Navigation("CourseInCards");
-
                     b.Navigation("CourseSections");
 
                     b.Navigation("studentCourses");
@@ -924,19 +639,24 @@ namespace UdemyAPI.Migrations
 
             modelBuilder.Entity("UdemyAPI.Models.CourseSection", b =>
                 {
-                    b.Navigation("CourseLecture");
+                    b.Navigation("CourseVideos");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.Instructor", b =>
                 {
-                    b.Navigation("Card");
-
                     b.Navigation("courses");
+
+                    b.Navigation("ShoppingCard");
+                });
+
+            modelBuilder.Entity("UdemyAPI.Models.ShoppingCard", b =>
+                {
+                    b.Navigation("Courses");
                 });
 
             modelBuilder.Entity("UdemyAPI.Models.Student", b =>
                 {
-                    b.Navigation("Card");
+                    b.Navigation("ShoppingCard");
 
                     b.Navigation("StudentCourses");
                 });

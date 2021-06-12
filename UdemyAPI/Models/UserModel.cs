@@ -9,6 +9,7 @@ namespace UdemyAPI.Models
     public class UserModel
     {
         [Required]
+        [EmailAddress]
         public string Mail { set; get; }
         [Required]
         public string Password { set; get; }

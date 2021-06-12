@@ -1,12 +1,15 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using UdemyAPI.Authentication;
 
 #nullable disable
 
 namespace UdemyAPI.Models
 {
-    public partial class UdemyContext : DbContext
+    public partial class UdemyContext : IdentityDbContext<ApplicationUser>
     {
         public UdemyContext()
         {
@@ -30,9 +33,11 @@ namespace UdemyAPI.Models
         public virtual DbSet<StdExam> StdExams { get; set; }
         public virtual DbSet<Student> Students { get; set; }
         public virtual DbSet<Topic> Topics { get; set; }
-        public virtual DbSet<Video> Videos { get; set; }
+        public virtual DbSet<Lecture> Lectures { get; set; }
         public virtual DbSet<SupCateg> SupCategs { get; set; }
-        public virtual DbSet<ShoppingCard> ShoppingCards { get; set; }
+
+        public virtual DbSet<CourseSection> CourseSections { get; set; }
+        public virtual DbSet<CourseInCard> CourseInCards { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -44,14 +49,16 @@ namespace UdemyAPI.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
                     
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
-            modelBuilder.Entity<ShoppingCard>( ent =>
-                {
-                    ent.HasOne(obj => obj.Student).WithOne(obj => obj.ShoppingCard);
-                    ent.HasOne(obj => obj.Instructor).WithOne(obj => obj.ShoppingCard);
-                });
+            //modelBuilder.Entity<ShoppingCard>( ent =>
+            //    {
+            //        ent.HasOne(obj => obj.Student).WithOne(obj => obj.ShoppingCard);
+            //        ent.HasOne(obj => obj.Instructor).WithOne(obj => obj.ShoppingCard);
+            //        ent.HasMany(c => c.Courses).WithOne(c => c.ShoppingCard);
+            //    });
 
             modelBuilder.Entity<SupCateg>(ent =>
             {
@@ -144,9 +151,12 @@ namespace UdemyAPI.Models
                     .WithMany(p => p.Courses)
                     .HasForeignKey(d => d.TopId).IsRequired();
 
-                entity.HasOne(o => o.ShoppingCard)
-                .WithMany(o => o.Courses)
-                .HasForeignKey(o => o.CardId);
+                //entity.HasOne(o => o.ShoppingCard)
+                //.WithMany(o => o.Courses)
+                //.HasForeignKey(o => o.CardId);
+
+                entity.HasMany(obj => obj.CourseSections)
+                .WithOne(obj => obj.Course).HasForeignKey(obj => obj.CrsId).IsRequired();
 
             });
 
@@ -176,8 +186,15 @@ namespace UdemyAPI.Models
             //        .HasColumnName("Inst_Id");
 
             //    entity.Property(e => e.CrsId).HasColumnName("Crs_Id");
-                
+
             //});
+
+            modelBuilder.Entity<CourseInCard>(entity =>
+            {
+                entity.HasKey(e => new { e.CId, e.CrsId });
+                
+
+            });
 
             modelBuilder.Entity<Instructor>(entity =>
             {
@@ -316,27 +333,29 @@ namespace UdemyAPI.Models
 
             });
 
-            modelBuilder.Entity<Video>(entity =>
+            modelBuilder.Entity<Lecture>(entity =>
             {
-                entity.HasKey(e => e.VidId);
+                entity.HasKey(e => e.LectureId);
 
-                entity.ToTable("Video");
+                entity.ToTable("Lecture");
 
-                entity.Property(e => e.VidId).HasColumnName("Vid_Id");
+                entity.Property(e => e.LectureId).HasColumnName("Lecture_Id");
 
-                entity.Property(e => e.CrsId).HasColumnName("Crs_Id");
+                //entity.Property(e => e.SectionId).HasColumnName("Crs_Id");
 
                 entity.Property(e => e.Description).HasMaxLength(50);
 
                 entity.Property(e => e.Title)
                     .IsRequired()
                     .HasMaxLength(50);
-                entity.HasOne(o => o.Course).WithMany(obj => obj.CourseVideos).HasForeignKey(o=>o.CrsId);
+                entity.HasOne(obj => obj.CourseSection).WithMany(obj => obj.CourseLecture).HasForeignKey(e => e.SectionId).IsRequired();
 
             });
+           
 
             OnModelCreatingPartial(modelBuilder);
         }
+       
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }

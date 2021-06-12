@@ -38,8 +38,9 @@ namespace UdemyAPI.Controllers
             return BadRequest(" There is no students yet ");
 
         }
-        [HttpPost]
-        public IActionResult StudentRegistration(Student s)
+        [HttpPost, DisableRequestSizeLimit]
+        [RequestFormLimits(MultipartBodyLengthLimit = 204857600)]
+        public async Task <IActionResult> StudentRegistration(IFormFile stdImg ,Student s)
         {
             if (s == null)
                 return BadRequest("Check Student data please");
@@ -48,9 +49,11 @@ namespace UdemyAPI.Controllers
                 return BadRequest("Mail is Exists Try another one"); 
 
             if (ModelState.IsValid)
-            {
 
-                 return Ok(_db.AddStudent(s));
+            {
+                s.ImagePath = await _db.UploadImage(stdImg);
+                Student Std =  _db.AddStudent(s);
+                 return Ok(Std);
             }
             else
             {
@@ -115,63 +118,15 @@ namespace UdemyAPI.Controllers
         //}
          [HttpPost, DisableRequestSizeLimit]
         [RequestFormLimits(MultipartBodyLengthLimit = 204857600)]
-        public async Task<IActionResult> Upload(IFormFile _file)
+       // public async Task<IActionResult> Upload(IFormFile _file)
+        public async Task<IActionResult> Upload()
         {
-            //  var auth = new FirebaseAuthProvider(new FirebaseConfig("AIzaSyD0MQz8q3CFW16JRY11lHctKPSShXxhs7Q"));
-            // var a = await auth.SignInWithEmailAndPasswordAsync("medoenoch@gmail.com", "newstart2020");
-            //var a = await auth.sig("medoenoch@gmail.com", "newstart2020");
 
 
-            if (_file != null)
-            {
-
-                string fileName = Path.GetFileNameWithoutExtension(_file.FileName);
-                string extension = Path.GetExtension(_file.FileName);
-                //save to db 
-                // fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
-                fileName = fileName + extension;
-                using (var fileStream = new FileStream(Path.Combine("Images/" + fileName), FileMode.Create))
-                {
-                    await _file.CopyToAsync(fileStream);
-                }
-                //-------------------------------------------------------------------
-                //string path = Path.Combine("Images/", fileName);
-                //only image
-                //Vids
-                //save to folder
-                //save to cloud 
-                //--------------------
-                FileStream fs;
-                // string path = Path.Combine("Images/",$"{fileName}");
-                fs = new FileStream(Path.Combine("Images/" + fileName), FileMode.Open);
-                //----
-                var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
-                var a = await auth.SignInWithEmailAndPasswordAsync(AuthMail, Password);
-
-                var cancellation = new CancellationTokenSource();
-
-                var upload = new FirebaseStorage(Bucket,
-                    new FirebaseStorageOptions
-                    {
-                        AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken)
-                        ,
-                        ThrowOnCancel = true
-                    }).Child("data")
-                    .Child($"{_file.FileName}")
-                    .PutAsync(fs, cancellation.Token);
-                //--------------------------------------------
-
-                var downloadUrl = await upload;
-                string str = downloadUrl;
-                var url = new Uri(str);
-
-                return Ok(url);
-
-            }
-            else
-            {
-                return NotFound("Error");
-            }  
+    
+                string r =  await _db.UploadImage(Request.Form.Files[0]);
+                return Ok(r);
+               
          }
         /*
          
