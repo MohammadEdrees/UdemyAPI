@@ -85,5 +85,12 @@ namespace UdemyAPI.Controllers
             return Ok(result);
 
         }
+
+        [HttpGet]
+        public IActionResult GetInstructorsInCategory(int id)
+        {
+            return Ok(_db.GetInstructorsInCategory(id));
+        }
+
     }
 }

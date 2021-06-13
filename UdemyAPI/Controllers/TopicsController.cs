@@ -40,9 +40,13 @@ namespace UdemyAPI.Controllers
                 return BadRequest();
             }
         }
+        [HttpGet]
+        public IActionResult GetTopicsInCategory(int id)
+        {
+            return Ok(_db.GetTopicsInCategory(id));
+        }
 
-
-
+       
 
     }
 }

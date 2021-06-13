@@ -356,6 +356,39 @@ namespace UdemyAPI.Services
             return category;
 
         }
+
+        //All courses in one category ordered by students count
+        public List<Course> GetOrderedCoursesInCategory(int catId)
+        {
+            return _db.Courses.Where(obj => obj.Top.supCateg.CategoryId == catId).OrderByDescending(obj => obj.studentCourses.Count).ToList();
+        }
+
+        //All topics in one category
+        public List<Topic> GetTopicsInCategory(int catId)
+        {
+            return _db.Topics.Where(obj => obj.supCateg.CategoryId == catId).ToList();
+        }
+
+        //All courses in one SupCategory ordered by students count
+        public List<Course> GetOrderedCoursesInSupCategory(int supcatId)
+        {
+            return _db.Courses.Where(obj => obj.Top.SupCatId == supcatId).OrderByDescending(obj => obj.studentCourses.Count).ToList();
+        }
+
+        //All instructors in one category
+        public List<Instructor> GetInstructorsInCategory(int catId)
+        {
+            IEnumerable<Course> courses = GetAllCoursesInOneCategory(catId);
+            List<Instructor> instructors = new List<Instructor>();
+            foreach (var item in courses)
+            {
+                Instructor instructor = _db.Instructors.FirstOrDefault(obj => obj.InstId == item.InstId);
+                instructors.Add(instructor);
+            }
+            return instructors;
+        }
+
+
     }
 }
 

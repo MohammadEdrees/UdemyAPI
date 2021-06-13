@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UdemyAPI.Authentication;
+using UdemyAPI.Models;
 using UdemyAPI.Services;
 
 namespace UdemyAPI.Controllers
@@ -65,6 +66,31 @@ namespace UdemyAPI.Controllers
             };
 
             return Ok(response);
+
+        }
+        [HttpPost]
+        public async Task<ActionResult<ResponseWithData<Student>>> SignUpStd(Student s)
+        {
+           // var response = new ResponseWithData<SignUp.response>();
+            if (await CheckMail(s.Mail))
+            {
+                return Ok(s.Mail);
+            }
+            var user = new ApplicationUser()
+            {
+                Email = s.Mail,
+                UserName = s.Fname+s.Lname
+
+            };
+            var result = await _userManager.CreateAsync(user, s.Password);
+            _db.AddStudent(s);
+
+            if (result.Succeeded == false)
+            {
+                return BadRequest("Some thing went wrong");
+            }
+
+            return Ok(s);
 
         }
 

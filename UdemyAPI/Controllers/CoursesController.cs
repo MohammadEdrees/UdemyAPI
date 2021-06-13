@@ -19,14 +19,14 @@ namespace UdemyAPI.Controllers
         {
             _db = db;
         }
-        
+
         [HttpGet]
-        public ActionResult<IEnumerable<Course>> GetAllCourses() 
+        public ActionResult<IEnumerable<Course>> GetAllCourses()
         {
             if (_db.GetAllInstructors().Count > 0) return _db.GetAllCourses();
             else return NotFound();
         }
-        
+
         [HttpGet]
         public ActionResult<List<Course>> GetCoursesByTopicId(int id)
         {
@@ -41,14 +41,14 @@ namespace UdemyAPI.Controllers
             }
         }
         [HttpGet]
-        public ActionResult  GetSortedCoursesRelatedToTopic(int id)
+        public ActionResult GetSortedCoursesRelatedToTopic(int id)
         {
             //List<StdCr> studentsCourses = _db.GetAllStudentCourses();
             //var GroupedByCourseId = studentsCourses.GroupBy(e => e.CrsId).ToList();
             //List<StdCr> studentsByCourseId =studentsCourses.Where(e => e.StdId == id).ToList();
             //
             return Ok(_db.GetSortedCoursesRelatedToTopic(id));
-           ///return _db.GetSortedCoursesRelatedToTopic(id);           
+            ///return _db.GetSortedCoursesRelatedToTopic(id);           
         }
         [HttpGet]
         public IActionResult GetTopCoursesbyStudents(int topicId)
@@ -65,7 +65,7 @@ namespace UdemyAPI.Controllers
             if (data.Count <= 0)
                 return BadRequest();
             return Ok(data);
-           
+
         }
 
         [HttpPost("{id}"), DisableRequestSizeLimit]
@@ -75,6 +75,17 @@ namespace UdemyAPI.Controllers
             return Ok(result);
 
         }
+        [HttpGet]
+        public IActionResult GetOrderedCoursesInCategory(int id) 
+            { 
+            return Ok(_db.GetOrderedCoursesInCategory(id));
+           }
+        [HttpGet]
+        public IActionResult GetOrderedCoursesInSupCategory(int id)
+        {
+            return Ok(_db.GetOrderedCoursesInSupCategory(id));
+        }
+
 
 
     }

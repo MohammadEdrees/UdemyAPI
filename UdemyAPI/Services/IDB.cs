@@ -64,6 +64,12 @@ namespace UdemyAPI.Services
         Task<Course> UploadCourseImg(IFormFile InsImg,int id) ;
         Task<Category> UploadCategoryImg(IFormFile InsImg,int id) ;
 
+        public List<Course> GetOrderedCoursesInCategory(int catId);
+        public List<Course> GetOrderedCoursesInSupCategory(int supcatId);
+        public List<Topic> GetTopicsInCategory(int catId);
+        public List<Instructor> GetInstructorsInCategory(int catId);
+
+
 
 
     }
