@@ -36,6 +36,13 @@ namespace UdemyAPI.Controllers
             return Ok(_db.GetTop8Categories());
         }
 
+        [HttpPost("{id}"), DisableRequestSizeLimit]
+        public async Task<IActionResult> categtImg(IFormFile file, int id)
+        {
+            var result = await _db.UploadCategoryImg(file, id);
+            return Ok(result);
+
+        }
 
 
     }

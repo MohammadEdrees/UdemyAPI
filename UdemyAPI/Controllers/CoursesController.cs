@@ -68,6 +68,14 @@ namespace UdemyAPI.Controllers
            
         }
 
+        [HttpPost("{id}"), DisableRequestSizeLimit]
+        public async Task<IActionResult> CousreImageUpload(IFormFile file, int id)
+        {
+            var result = await _db.UploadCourseImg(file, id);
+            return Ok(result);
+
+        }
+
 
     }
 }

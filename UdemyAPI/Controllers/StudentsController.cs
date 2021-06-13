@@ -1,4 +1,5 @@
-﻿using Firebase.Auth;
+﻿using BrunoZell.ModelBinding;
+using Firebase.Auth;
 using Firebase.Storage;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -25,10 +26,11 @@ namespace UdemyAPI.Controllers
         private static string Bucket = "udemy-3c633.appspot.com";
         private static string AuthMail = "medoenoch@gmail.com";
         private static string Password = "newstart2020";
-        
-        public StudentsController(IDB db)
+        IWebHostEnvironment hostingEnvironment;
+        public StudentsController(IDB db, IWebHostEnvironment _hostingEnvironment)
         {
             _db = db;
+            hostingEnvironment = _hostingEnvironment;
         }
         [HttpGet]
         public IActionResult GetStudents()
@@ -40,20 +42,20 @@ namespace UdemyAPI.Controllers
         }
         [HttpPost, DisableRequestSizeLimit]
         [RequestFormLimits(MultipartBodyLengthLimit = 204857600)]
-        public async Task <IActionResult> StudentRegistration(IFormFile stdImg ,Student s)
+        public async Task<IActionResult> StudentRegistration(IFormFile stdImg, Student s)
         {
             if (s == null)
                 return BadRequest("Check Student data please");
 
             if (_db.GetStudentByMail(s.Mail) != null)
-                return BadRequest("Mail is Exists Try another one"); 
+                return BadRequest("Mail is Exists Try another one");
 
             if (ModelState.IsValid)
 
             {
                 s.ImagePath = await _db.UploadImage(stdImg);
-                Student Std =  _db.AddStudent(s);
-                 return Ok(Std);
+                Student Std = _db.AddStudent(s);
+                return Ok(Std);
             }
             else
             {
@@ -65,7 +67,7 @@ namespace UdemyAPI.Controllers
         [HttpDelete]
         public IActionResult Remove(int id)
         {
-            Student foundStd =_db.GetStudentById(id);
+            Student foundStd = _db.GetStudentById(id);
             if (foundStd != null)
             {
                 _db.RemoveStudent(foundStd);
@@ -78,24 +80,24 @@ namespace UdemyAPI.Controllers
             }
         }
         [HttpPut("{id}")]
-        public IActionResult testEdit(int id,Student newS)
+        public IActionResult testEdit(int id, Student newS)
         {
             //DataBinding ["","",""]
             //Images
-            
+
             if (id > 0)
             {
                 Student OldStd = _db.GetStudentById(id);
                 if (OldStd == null)
-                   return NotFound($"Student Not Found you id is {id}");
-                
-                if(OldStd.StdId!=newS.StdId)
+                    return NotFound($"Student Not Found you id is {id}");
+
+                if (OldStd.StdId != newS.StdId)
                     return BadRequest($"OldID is{OldStd.StdId}:NEWID is {newS.StdId}");
                 else
                 {
-                 Student EditedStd =_db.EditStudent(OldStd, newS);
-                  return Ok(EditedStd);
-  
+                    Student EditedStd = _db.EditStudent(OldStd, newS);
+                    return Ok(EditedStd);
+
                 }
 
             }
@@ -116,98 +118,27 @@ namespace UdemyAPI.Controllers
         //    }
         //    return Ok(file.FileName);
         //}
-         [HttpPost, DisableRequestSizeLimit]
+        [HttpPost, DisableRequestSizeLimit]
         [RequestFormLimits(MultipartBodyLengthLimit = 204857600)]
-       // public async Task<IActionResult> Upload(IFormFile _file)
+        // public async Task<IActionResult> Upload(IFormFile _file)
         public async Task<IActionResult> Upload()
         {
+            string r = await _db.UploadImage(Request.Form.Files[0]);
+            return Ok(r);
+
+        }
 
 
-    
-                string r =  await _db.UploadImage(Request.Form.Files[0]);
-                return Ok(r);
-               
-         }
-        /*
-         
-         String downloadUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
-          Firestore.instance.collection('images').add({"url": downloadUrl});
-           }
 
-         
-         
-         
-         
-         
-         
-         
-         
-         * 
-         [HttpPost]
-         [ValidateAntiForgeryToken]
-         [RequestFormLimits(MultipartBodyLengthLimit = 204857600)]
-         public async Task<IActionResult> Create([Bind("Id,Title,ImageFile")] ImageModel imageModel)
-         {
-             if (ModelState.IsValid)
-             {
-
-                 //save image to wwwroot/image
-                 string wwwRootPath = hostEnvironment.WebRootPath;
-                 string fileName = Path.GetFileNameWithoutExtension(imageModel.ImageFile.FileName);
-                 string extension = Path.GetExtension(imageModel.ImageFile.FileName);
-                 imageModel.ImageName = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
-                 string path = Path.Combine(wwwRootPath + "/images/", fileName);
-
-                 using (var fileStream = new FileStream(path, FileMode.Create))
-                 {
-                     await imageModel.ImageFile.CopyToAsync(fileStream);
-                 }
-                 //insert record
-                 _context.Add(imageModel);
-
-
-        public ActionResult Create(Student std ,HttpPostedFileBase stdimg, HttpPostedFileBase stdcv)
+        [HttpPost("{id}"), DisableRequestSizeLimit]
+        public async Task<IActionResult>StudentImg( IFormFile file , int id)
         {
-            if (ModelState.IsValid)
-            {
-                string filename = std.id.ToString() + "." + stdimg.FileName.Split('.')[1];
-                stdimg.SaveAs(Server.MapPath("~/imges/") + filename);
-                std.stdphoto = filename;
-                string filename1 = std.id.ToString() + "." + stdcv.FileName.Split('.')[1];
-                stdimg.SaveAs(Server.MapPath("~/imges/") + filename1);
-                std.stdcv = filename1;
-                StudentMoc.Addstudent(std);
-                return RedirectToAction("index");
-            }
-            else
-            {
-                return View(std);
-            }
+            var result = await _db.UploadStudentImg(file,id);
+            return Ok(result);
 
-            
-            
-            ?xml version="1.0" encoding="utf-8"?>
-            <configuration>
-            
-              
-             
-              <system.webServer>
-            	  <security>
-            		  <requestFiltering>
-            			  <requestLimits maxAllowedContentLength="204857600"/>
-            		  </requestFiltering>
-            	  </security>
-              </system.webServer>
-            
-            
-            </configuration>
-            
+        }
 
+       
 
-
-
-
-         */
     }
-
 }

@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 #nullable disable
 
@@ -19,6 +22,7 @@ namespace UdemyAPI.Models
         public string Fname { get; set; }
         public string Lname { get; set; }
         public string Phone { get; set; }
+        [StringLength(maximumLength:500, MinimumLength = 1 )]
         public string ImagePath { get; set; }
         [Required]
         [RegularExpression(@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" +
@@ -35,5 +39,6 @@ namespace UdemyAPI.Models
        // public virtual ShoppingCard ShoppingCard { set; get; }
         public virtual Card Card { set; get; }
 
+        
     }
 }

@@ -2,10 +2,15 @@
 using Firebase.Storage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UdemyAPI.Models;
@@ -17,14 +22,16 @@ namespace UdemyAPI.Services
     public class DBService : IDB
     {
         UdemyContext _db;
+        private readonly IConfiguration _configuration;
         private static string ApiKey = "AIzaSyD0MQz8q3CFW16JRY11lHctKPSShXxhs7Q";
         private static string Bucket = "udemy-3c633.appspot.com";
         private static string AuthMail = "medoenoch@gmail.com";
         private static string Password = "newstart2020";
         
-        public DBService(UdemyContext db)
+        public DBService(UdemyContext db,IConfiguration configuration )
         {
             _db = db;
+            _configuration = configuration;
         }
         public List<Category> GetAllCategories()
         {
@@ -193,8 +200,9 @@ namespace UdemyAPI.Services
              OldStd.Lname = newS.Lname;
              OldStd.Mail = newS.Mail;
              OldStd.Password = newS.Password;
+           //  OldStd.ImagePath = newS.ImagePath;
              OldStd.Phone = newS.Phone;
-           //  OldStd.ShoppingCard = newS.ShoppingCard;
+             OldStd.Card = newS.Card;
              OldStd.StudentCourses = newS.StudentCourses;
              OldStd.Address = newS.Address;
             _db.SaveChanges();
@@ -244,8 +252,8 @@ namespace UdemyAPI.Services
 
         public IEnumerable<Course> GetAllCoursesInOneCategory(int categId)
         {
-            //-------------------------------------------------
-            //
+            
+  
             List<Course> CollectionOfcrss = new List<Course>();
             List<Topic> CollectionOfTopicsinSupCateg = new List<Topic>();
             List  < SupCateg> supCategs =   _db.SupCategs.Where(obj=>obj.CategoryId==categId).ToList();
@@ -261,17 +269,20 @@ namespace UdemyAPI.Services
             }   
             return CollectionOfcrss; 
         }
-
-        public object GetToken()
+        //GengerateToken
+        public string GetToken()
         {
-            //string key = "secret_Key";
-            //var SecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-            //var Credentials = new SigningCredentials(SecurityKey, SecurityAlgorithms.HmacSha256);
-            //var token = new JwtSecurityToken(null,null,null,expires:DateTime.Now.AddDays(2),signingCredentials:Credentials);
-            //var Jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
-
-            //return new { data=Jwt_token };
-            return null;
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
+            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+            var tokeOptions = new JwtSecurityToken(
+                issuer: _configuration["JWT:Issuer"],
+                audience: _configuration["JWT:Audience"],
+                claims: new List<Claim>(),
+                expires: DateTime.Now.AddMinutes(5),
+                signingCredentials: signinCredentials
+            );
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
+            return tokenString;
         
         }
 
@@ -305,6 +316,45 @@ namespace UdemyAPI.Services
                 string str = downloadUrl;
              //  var url = new Uri(str);
              return str;
+        }
+
+        public async Task<Student> UploadStudentImg(IFormFile stdImg,int id)
+        {
+            Student old = GetStudentById(id);
+            Student newS = new Student();
+            string Imglink = await UploadImage(stdImg);
+            old.ImagePath = Imglink;
+            newS = old;
+            EditStudent(old, newS); 
+            return newS;
+        }
+
+        public async Task<Instructor> UploadInstructorImg(IFormFile insImg, int id)
+        {
+            Instructor ins = GetInstructorById(id);
+            string Imglink = await UploadImage(insImg);
+            ins.ImagPath = Imglink;
+            _db.SaveChanges();
+            return ins;
+        }
+
+        public async Task<Course> UploadCourseImg(IFormFile crsImg, int id)
+        {
+            Course crs = GetCourseById(id);
+            string Imglink = await UploadImage(crsImg);
+            crs.ImagePath = Imglink;
+            _db.SaveChanges();
+            return crs;
+        }
+
+        public async Task<Category> UploadCategoryImg(IFormFile CategoryImg, int id)
+        {
+            Category category = GetCategoryById(id);
+            string Imglink = await UploadImage(CategoryImg);
+             category.imgPath = Imglink;
+            _db.SaveChanges();
+            return category;
+
         }
     }
 }

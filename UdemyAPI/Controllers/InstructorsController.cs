@@ -76,26 +76,13 @@ namespace UdemyAPI.Controllers
             {
                 return BadRequest();
             }
-        
-        //}
-        //[HttpPost]
-        //public ActionResult<Instructor> GetInstructorByName(string name) {
-        //    if (name.Length > 0)
-        //    {
-        //        Instructor FoundInstructor = _db.GetInstructorByName(name);
-        //        if (FoundInstructor != null)
-        //        {
-        //            return FoundInstructor;
-        //        }
-        //        else
-        //        {
-        //            return NotFound();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return BadRequest();
-        //    }
+        }
+
+        [HttpPost("{id}"), DisableRequestSizeLimit]
+        public async Task<IActionResult> InsttImg(IFormFile file, int id)
+        {
+            var result = await _db.UploadInstructorImg(file, id);
+            return Ok(result);
 
         }
     }

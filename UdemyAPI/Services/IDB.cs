@@ -56,9 +56,15 @@ namespace UdemyAPI.Services
         Task<object> Login(UserModel user);
         IEnumerable<Course> GetAllCoursesInOneCategory(int categId);
         List<Category> GetTop8Categories();
-        object GetToken();
+        string GetToken();
 
         Task<string> UploadImage(IFormFile img) ;
+        Task<Student> UploadStudentImg(IFormFile stdImg,int id) ;
+        Task<Instructor> UploadInstructorImg(IFormFile InsImg,int id) ;
+        Task<Course> UploadCourseImg(IFormFile InsImg,int id) ;
+        Task<Category> UploadCategoryImg(IFormFile InsImg,int id) ;
+
+
 
     }
 }

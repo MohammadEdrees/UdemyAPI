@@ -9,7 +9,7 @@ using UdemyAPI.Authentication;
 
 namespace UdemyAPI.Models
 {
-    public partial class UdemyContext : IdentityDbContext<ApplicationUser>
+    public partial class UdemyContext : IdentityDbContext<ApplicationUser,IdentityRole,string>
     {
         public UdemyContext()
         {

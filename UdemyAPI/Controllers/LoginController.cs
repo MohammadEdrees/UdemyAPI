@@ -37,26 +37,26 @@ namespace UdemyAPI.Controllers
             
             if (ModelState.IsValid)
             {
-
-                //  var result = await _db.Login(user);
-                var user = await userManager.FindByEmailAsync(model.Mail);
-                if (user != null && await userManager.CheckPasswordAsync(user, model.Password)) {
-                    var userRoles = await userManager.GetRolesAsync(user);
-                    var authClaims = new List<Claim>
-                    {
-                        new Claim (ClaimTypes.Name,user.UserName),
-                        new Claim (JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
-                    };
-                   foreach (var userRole in userRoles)
-                {
-                        authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                }
+                //   var user = await userManager.FindByEmailAsync(model.Email);
+                Student user = _db.GetStudentByMail(model.Mail);
+                if (user != null) {
+               // if (user != null && await userManager.CheckPasswordAsync(user, model.PasswordHash)) {
+                //    var userRoles = await userManager.GetRolesAsync(user);
+                //    var authClaims = new List<Claim>
+                //    {
+                //        new Claim (ClaimTypes.Sid,user.UserName),
+                //        new Claim (JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
+                //    };
+                //   foreach (var userRole in userRoles)
+                //{
+                //        authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                //}
                     var authenticationKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));
                     var token = new JwtSecurityToken(
                         issuer: null,
                         audience: null,
                         expires: DateTime.Now.AddHours(3),
-                        claims: authClaims,
+                        claims: null,
                         signingCredentials: new SigningCredentials(authenticationKey, SecurityAlgorithms.HmacSha256)
 
 
@@ -72,40 +72,34 @@ namespace UdemyAPI.Controllers
                 return Unauthorized();
         }
         [HttpPost]
-        public async Task<IActionResult> Reg ([FromBody]UserModel InsModel)
+        public async Task<IActionResult> Reg ([FromBody]Student Model)
         {
-            var userExists = await userManager.FindByEmailAsync(InsModel.Mail);
+            //var userExists = await userManager.FindByEmailAsync(Model.Email);
+            var userExists = _db.GetStudentByMail(Model.Mail);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, 
-                    new Response { Message = "User Already Exists",Statues="Error" });
+                return BadRequest("Already Exists");
 
             ApplicationUser user = new ApplicationUser()
             {
-                Email = InsModel.Mail,
-                SecurityStamp = Guid.NewGuid().ToString()
-                //UserName = $"{InsModel.Fname + InsModel.Lname}"
-                
-
+     
+                //Empty
             };
-            var result = await userManager.CreateAsync(user, InsModel.Password);
+
+            //var result = await userManager.CreateAsync(user, Model.PasswordHash);
+            var result = await userManager.CreateAsync(user, Model.Password);
             if(!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                     new Response { Message = "Faild To Create", Statues = "Error" });
+                return BadRequest("FaILD");
 
 
-            return Ok(new Response() { Message = "User Created Successfully", Statues = "Success" });
+            return Ok("Success");
 
         }
 
+        [HttpGet]
+        public IActionResult GetToken() {
 
-
-
-        //[HttpGet("Stream/Url/{*videoUrl}")]
-        //public async Task<FileStreamResult> GetStreamFromUrlAsync(string videoUrl)
-        //{
-        //    var stream = await _streamingService.GetVideoByUrlAsync(videoUrl).ConfigureAwait(false);
-        //    return new FileStreamResult(stream, "video/mp4");
-        //}
+            return Ok(_db.GetToken());
+        }
 
     }
 }

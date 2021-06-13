@@ -25,7 +25,7 @@ namespace UdemyAPI
     public class Startup
     {
         //cors
-        private string enableCors = "cors";
+        private readonly string enableCors = "cors";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -33,56 +33,79 @@ namespace UdemyAPI
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
+           // services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
 
             services.AddControllers();
             services.AddControllers().AddNewtonsoftJson(options =>
+            //Looping Ignore
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-
-
+            //Nsawg Not Swagger
             services.AddSwaggerDocument();
-           
-            
+
+            //ConfirmJWt
             services.AddAuthentication(o =>
             {
                 o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
-            }).AddJwtBearer(jwt =>
+            })
+              .AddJwtBearer(jwt =>
             {
-                var key = Encoding.ASCII.GetBytes(Configuration["JWT:Secret"]);
+                var key = Encoding.ASCII.GetBytes(Configuration["JWT:Key"]);
                 jwt.SaveToken = true;
                 jwt.RequireHttpsMetadata = false;
                 jwt.TokenValidationParameters = new TokenValidationParameters
                 {
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"])),
-                    // IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                   // ValidateLifetime = true,
-                    RequireExpirationTime = false
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey=true,
+
+                    ValidIssuer=Configuration["JWT:Issuer"],
+                    ValidAudience= Configuration["JWT:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey
+                    (Encoding.UTF8.GetBytes(Configuration["JWT:Key"]))
+                   
                 };
             });
-            //services.AddDefaultIdentity<IdentityUser>(o => o.SignIn.RequireConfirmedAccount = true)
-            //    .AddEntityFrameworkStores<UdemyContext>();
+
+
+            //DBContext
+            services.AddDbContext<UdemyContext>(options =>
+            {
+                options.UseLazyLoadingProxies()
+                .UseSqlServer(Configuration.GetConnectionString("con1"));
+                
+            });
+
+            //Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<UdemyContext>()
                 .AddDefaultTokenProviders();
 
+            services.Configure<IdentityOptions>(op=> {
+                //No Duplication in Mail
+                op.User.RequireUniqueEmail = true;
+                //password  Change Later
+                op.Password.RequiredLength = 8;
+                op.Password.RequireDigit=false;
+                op.Password.RequireLowercase=false;
+                op.Password.RequireUppercase=false;
+                op.Password.RequireNonAlphanumeric=false;
 
-            services.AddDbContext<UdemyContext>(options =>
-            {
-                options.UseLazyLoadingProxies().UseSqlServer("Server=.;Database=Udemy;Trusted_Connection=True;");
-                
             });
+
+            //DI
             services.AddTransient<IDB, DBService>();
+
+            //CORS
             services.AddCors(c =>
             {
+                //Allow All 
                 c.AddPolicy(enableCors, c => 
                 {
                     c.AllowAnyOrigin();
@@ -91,20 +114,18 @@ namespace UdemyAPI
 
                 });
             });
+
+            //FilesOptions
             services.Configure<FormOptions>(o => {
                 o.ValueLengthLimit = int.MaxValue;
                 o.MultipartBodyLengthLimit = int.MaxValue;
                 o.MemoryBufferThreshold = int.MaxValue;
             });
             
-            
-            
-
-
-
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
+        //Middlewares
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
