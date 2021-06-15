@@ -209,25 +209,30 @@ namespace UdemyAPI.Services
             return OldStd;
         }
 
-        public async Task<object> Login(UserModel user)
+        public object Login(UserModel user)
         {
-           Student student = await _db.Students.FirstOrDefaultAsync(obj => obj.Mail == user.Mail &&
+           Student student =  _db.Students.FirstOrDefault(obj => obj.Mail == user.Mail &&
            obj.Password==user.Password 
                      );
             
             if (student == null)
             {
-                Instructor instructor = await _db.Instructors.FirstOrDefaultAsync(obj => obj.Mail == user.Mail &&
+                Instructor instructor = 
+                     _db.Instructors.FirstOrDefault(obj => obj.Mail == user.Mail &&
                 obj.Password == user.Password
                     );
+                instructor.Token = GetToken();
                 return instructor;
             }
             else
             {
+                student.Token = GetToken();
                 return student;
             }
 
         }
+
+     
 
 
         public List<Category> GetTop8Categories()
@@ -278,7 +283,7 @@ namespace UdemyAPI.Services
                 issuer: _configuration["JWT:Issuer"],
                 audience: _configuration["JWT:Audience"],
                 claims: new List<Claim>(),
-                expires: DateTime.Now.AddMinutes(5),
+                expires: DateTime.Now.AddHours(5),
                 signingCredentials: signinCredentials
             );
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);

@@ -33,11 +33,15 @@ namespace UdemyAPI.Models
         public string Password { get; set; }
         public string Address { get; set; }
         
-        //public string token { get; set; }
+        public string Token { get; set; }
+        public string Class { get; private set; } = "student";
         public virtual ICollection<StdCr> StudentCourses { set; get; }
 
        // public virtual ShoppingCard ShoppingCard { set; get; }
         public virtual Card Card { set; get; }
+
+
+
 
         
     }

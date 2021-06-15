@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UdemyAPI.Models;
 
 namespace UdemyAPI.Migrations
 {
     [DbContext(typeof(UdemyContext))]
-    partial class UdemyContextModelSnapshot : ModelSnapshot
+    [Migration("20210614190025_token1")]
+    partial class token1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -480,9 +482,6 @@ namespace UdemyAPI.Migrations
 
                     b.Property<int?>("CId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Class")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Communication")
                         .HasMaxLength(50)

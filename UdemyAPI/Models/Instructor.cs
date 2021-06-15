@@ -16,7 +16,7 @@ namespace UdemyAPI.Models
           //  InstCrs = new HashSet<InstCr>();
         }
         [NotMapped]
-        public object token { set; get; }
+        public string Token { set; get; }
         public int InstId { get; set; }
 
         [MaxLength(50,ErrorMessage = "Can't Exceed 50 character")]
@@ -55,8 +55,10 @@ namespace UdemyAPI.Models
        
         [MaxLength(100, ErrorMessage = "Can't Exceed 100 character")]
         public string Biography { get; set; }
+        public string Class { get; private set; } = "instructor";
 
-       // public virtual ShoppingCard ShoppingCard { set; get; }
+
+        // public virtual ShoppingCard ShoppingCard { set; get; }
 
         public int ?CId { set; get; }
         public virtual Card Card { set; get; }

@@ -22,10 +22,6 @@ namespace UdemyAPI.Controllers
     public class StudentsController : ControllerBase
     {
         IDB _db;
-        private static string ApiKey = "AIzaSyD0MQz8q3CFW16JRY11lHctKPSShXxhs7Q";
-        private static string Bucket = "udemy-3c633.appspot.com";
-        private static string AuthMail = "medoenoch@gmail.com";
-        private static string Password = "newstart2020";
         IWebHostEnvironment hostingEnvironment;
         public StudentsController(IDB db, IWebHostEnvironment _hostingEnvironment)
         {
@@ -42,7 +38,7 @@ namespace UdemyAPI.Controllers
         }
         [HttpPost, DisableRequestSizeLimit]
         [RequestFormLimits(MultipartBodyLengthLimit = 204857600)]
-        public async Task<IActionResult> StudentRegistration(IFormFile stdImg, Student s)
+        public IActionResult StudentRegistration( Student s)
         {
             if (s == null)
                 return BadRequest("Check Student data please");
@@ -53,7 +49,6 @@ namespace UdemyAPI.Controllers
             if (ModelState.IsValid)
 
             {
-                s.ImagePath = await _db.UploadImage(stdImg);
                 Student Std = _db.AddStudent(s);
                 return Ok(Std);
             }
