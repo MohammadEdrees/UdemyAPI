@@ -64,6 +64,7 @@ namespace UdemyAPI.Services
             return _db.SupCategs.Where(obj => obj.CategoryId == id).ToList();
         }
 
+
         public Instructor AddInstructor(Instructor s)
         {    // s.Password=>Hash
             _db.Instructors.Add(s);

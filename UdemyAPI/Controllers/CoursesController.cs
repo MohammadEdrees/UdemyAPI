@@ -85,6 +85,11 @@ namespace UdemyAPI.Controllers
         {
             return Ok(_db.GetOrderedCoursesInSupCategory(id));
         }
+        [HttpGet]
+        public IActionResult GetCourseById(int id)
+        {
+            return Ok(_db.GetCourseById(id));
+        }
 
 
 
