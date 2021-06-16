@@ -395,6 +395,75 @@ namespace UdemyAPI.Services
         }
 
 
+        public async Task<string> UploadVideo(IFormFile vid)
+        {
+            // Firebase Auth
+            var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+            var a = await auth.SignInWithEmailAndPasswordAsync(AuthMail, Password);
+            var cancellation = new CancellationTokenSource();
+            //Stream
+            using (var fileStream = new FileStream(Path.Combine("Images/", vid.FileName), FileMode.Create))
+            {
+                await vid.CopyToAsync(fileStream);
+            }
+            FileStream fs;
+            fs = new FileStream(Path.Combine("Images/" + vid.FileName), FileMode.Open);
+
+            // Firebase Upload
+
+            var upload = new FirebaseStorage(Bucket,
+                new FirebaseStorageOptions
+                {
+                    AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken)
+                    ,
+                    ThrowOnCancel = true
+                }).Child("Videos")
+                .Child($"{vid.FileName}")
+                .PutAsync(fs, cancellation.Token);
+            var downloadUrl = await upload;
+            string str = downloadUrl;
+            //  var url = new Uri(str);
+            return str;
+        }
+
+
+        public CourseSection AddCourseSection(int CrsId, CourseSection courseSection)
+        {
+            courseSection.CrsId = CrsId;
+            _db.CourseSections.Add(courseSection);
+            _db.SaveChanges();
+            return courseSection;
+        }
+
+        public CourseSection GetCourseSection(int SecID)
+        {
+            return _db.CourseSections.FirstOrDefault(obj => obj.SectionId == SecID);
+        }
+
+        public Lecture AddLecture(int SecId, Lecture lecture)
+        {
+            lecture.SectionId = SecId;
+            _db.Lectures.Add(lecture);
+            _db.SaveChanges();
+            return lecture;
+        }
+
+        public Lecture GetLecture(int LecID)
+        {
+            return _db.Lectures.FirstOrDefault(obj => obj.LectureId == LecID);
+        }
+
+        public async Task<Lecture> UploadLectureVideo(int LectId, IFormFile Video)
+        {
+            Lecture lecture = _db.Lectures.FirstOrDefault(obj => obj.LectureId == LectId);
+            string Vidlink = await UploadVideo(Video);
+            lecture.Link = Vidlink;
+            _db.SaveChanges();
+            return lecture;
+        }
+
+
+
     }
 }
 

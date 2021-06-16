@@ -68,7 +68,7 @@ namespace UdemyAPI.Controllers
 
         }
 
-        [HttpPost("{id}"), DisableRequestSizeLimit]
+        [HttpPut("{id}"), DisableRequestSizeLimit]
         public async Task<IActionResult> CousreImageUpload(IFormFile file, int id)
         {
             var result = await _db.UploadCourseImg(file, id);
@@ -91,7 +91,43 @@ namespace UdemyAPI.Controllers
             return Ok(_db.GetCourseById(id));
         }
 
+        [HttpPost("{CrsId}")]
+        public IActionResult AddCourseSection(int CrsId, CourseSection courseSection)
+        {
+            CourseSection CrsSec = _db.AddCourseSection(CrsId, courseSection);
+            return Ok(CrsSec);
+        }
 
+        [HttpPost("{SecId}")]
+        public IActionResult AddLecture(int SecId, Lecture lecture)
+        {
+            Lecture Lec = _db.AddLecture(SecId, lecture);
+            return Ok(Lec);
+        }
 
+        [HttpPut("{LectId}"), DisableRequestSizeLimit]
+        public async Task<IActionResult> UploadLectureVideo(int LectId, IFormFile Video)
+        {
+            var result = await _db.UploadLectureVideo(LectId, Video);
+            return Ok(result);
+        }
+
+        [HttpGet("{SecID}")]
+        public IActionResult GetCourseSection(int SecID)
+        {
+            CourseSection courseSection = _db.GetCourseSection(SecID);
+            if (courseSection == null)
+                return BadRequest("Not Exist");
+            return Ok(courseSection);
+        }
+
+        [HttpGet("{LecID}")]
+        public IActionResult GetLecture(int LecID)
+        {
+            Lecture lecture = _db.GetLecture(LecID);
+            if (lecture == null)
+                return BadRequest("Not Exist");
+            return Ok(lecture);
+        }
     }
 }

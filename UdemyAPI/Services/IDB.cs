@@ -70,6 +70,11 @@ namespace UdemyAPI.Services
         public List<Topic> GetTopicsInCategory(int catId);
         public List<Instructor> GetInstructorsInCategory(int catId);
 
+        CourseSection AddCourseSection(int CrsId, CourseSection courseSection);
+        Lecture AddLecture(int SecId, Lecture lecture);
+        Task<Lecture> UploadLectureVideo(int LectId, IFormFile Video);
+        CourseSection GetCourseSection(int SecID);
+        Lecture GetLecture(int LecID);
 
 
 
