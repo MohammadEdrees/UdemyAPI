@@ -34,11 +34,12 @@ namespace UdemyAPI.Controllers
             
             if (ModelState.IsValid)
             {
-                return Ok( _db.Login(model));
-           
-               
+                var Obj = _db.Login(model);
+                if(Obj == null)
+                    return BadRequest("There was a problem logging in. Check your email and password or create account.");
+                return Ok(Obj);
             }
-                return BadRequest("Ckeck you account plz");
+            return BadRequest("There was a problem logging in. Check your email and password or create account.");
         }
    
      

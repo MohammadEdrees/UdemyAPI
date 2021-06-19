@@ -222,6 +222,8 @@ namespace UdemyAPI.Services
                      _db.Instructors.FirstOrDefault(obj => obj.Mail == user.Mail &&
                 obj.Password == user.Password
                     );
+                if (instructor == null)
+                    return null;
                 instructor.Token = GetToken();
                 return instructor;
             }
