@@ -34,5 +34,19 @@ namespace UdemyAPI.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult GetSupCategoryByCategoryName(string CategoryName)
+        {
+            IEnumerable<SupCateg> supCategs = _db.supCategoriesByName(CategoryName);
+            if (supCategs != null)
+            {
+                return Ok( supCategs );
+            }
+            else
+            {
+                return BadRequest("Something went Wrong");
+            }
+        }
+
     }
 }

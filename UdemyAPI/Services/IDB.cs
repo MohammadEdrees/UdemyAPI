@@ -80,6 +80,8 @@ namespace UdemyAPI.Services
         IEnumerable<Lecture> AllLecturesInSpecificSection(int SecId);
         IEnumerable<CourseSection> AllCourseSectionsInSpecificCourse(int SecId);
 
+        IEnumerable<SupCateg> supCategoriesByName(string catName); 
+
 
 
 

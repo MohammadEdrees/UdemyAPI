@@ -494,6 +494,12 @@ namespace UdemyAPI.Services
         {
             return _db.CourseSections.Where(obj => obj.CrsId == CourseId).ToList();
         }
+
+        public IEnumerable<SupCateg> supCategoriesByName(string catName)
+        {
+
+            return _db.SupCategs.Where(col => col.Category.CategoryName == catName).ToList();
+        }
     }
 }
 
