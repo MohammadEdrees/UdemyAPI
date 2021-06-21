@@ -16,11 +16,11 @@ namespace UdemyAPI.Controllers
     public class InstructorsController : ControllerBase
     {
         IDB _db;
-       
+
         public InstructorsController(IDB db)
         {
             _db = db;
-            
+
         }
 
         //GetInstructors
@@ -50,7 +50,7 @@ namespace UdemyAPI.Controllers
 
             if (ModelState.IsValid)
             {
-                
+
                 return Ok(_db.AddInstructor(ins));
             }
             else {
@@ -62,8 +62,8 @@ namespace UdemyAPI.Controllers
         [HttpGet]
         public ActionResult<Instructor> GetInstructorById(int id) {
             if (id > 0) {
-             Instructor FoundInstructor = _db.GetInstructorById(id);
-            if(FoundInstructor != null)
+                Instructor FoundInstructor = _db.GetInstructorById(id);
+                if (FoundInstructor != null)
                 {
                     return FoundInstructor;
                 }
@@ -92,5 +92,35 @@ namespace UdemyAPI.Controllers
             return Ok(_db.GetInstructorsInCategory(id));
         }
 
+        [HttpPut]
+        public IActionResult EditInstructor(int id, Instructor ins)
+        {
+            Instructor OldIns = _db.GetInstructorById(id);
+            if (OldIns == null)
+                return NotFound($"Instructor Not Found you id is {id}");
+
+            if (OldIns.InstId != ins.InstId)
+                return BadRequest($"OldID is{OldIns.InstId}:NEWID is {OldIns.InstId}");
+            else
+            {
+                Instructor EditedIns = _db.EditInstructor(OldIns, ins);
+                return Ok(EditedIns);
+
+            }
+
+        }
+           
     }
+        //    if (id > 0)
+        //    {
+        //      Instructor  oldInst = _db.GetInstructorById(id);
+        //        if (oldInst.InstId == ins.InstId) {
+        //            _db.EditInstructor(oldInst, ins);
+        //        }
+        //        return  BadRequest("Instructors Not Found"); 
+        //    }
+        //    return BadRequest("Instructor Not Found");
+        //}
+
+    //}
 }

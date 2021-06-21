@@ -75,7 +75,7 @@ namespace UdemyAPI.Controllers
             }
         }
         [HttpPut("{id}")]
-        public IActionResult testEdit(int id, Student newS)
+        public IActionResult EditStudent(int id, Student newS)
         {
             //DataBinding ["","",""]
             //Images

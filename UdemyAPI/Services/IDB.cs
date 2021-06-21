@@ -52,6 +52,7 @@ namespace UdemyAPI.Services
          Student GetStudentById(int id);
          void RemoveStudent(Student s);
          Student EditStudent(Student s1,Student s2);
+         Instructor EditInstructor(Instructor oldIns, Instructor newIns);
 
         object Login(UserModel user);
         //object Logout(object user);
@@ -75,6 +76,14 @@ namespace UdemyAPI.Services
         Task<Lecture> UploadLectureVideo(int LectId, IFormFile Video);
         CourseSection GetCourseSection(int SecID);
         Lecture GetLecture(int LecID);
+
+        IEnumerable<Lecture> AllLecturesInSpecificSection(int SecId);
+        IEnumerable<CourseSection> AllCourseSectionsInSpecificCourse(int SecId);
+
+
+
+
+
 
 
 

@@ -464,8 +464,36 @@ namespace UdemyAPI.Services
             return lecture;
         }
 
+        public Instructor EditInstructor(Instructor oldIns, Instructor newIns)
+        {
+            oldIns.Fname = newIns.Fname;
+            oldIns.Lname = newIns.Lname;
+            oldIns.Address = newIns.Address;
+            oldIns.Biography = newIns.Biography;
+            oldIns.Communication = newIns.Communication;
+            oldIns.Phone = newIns.Phone;
+            oldIns.Password = newIns.Password;
+            oldIns.Mail= newIns.Mail;
+            oldIns.ImagPath = newIns.ImagPath;
+            oldIns.Card = newIns.Card;
+            oldIns.CId = newIns.CId;
+            oldIns.courses = newIns.courses;
+            _db.SaveChanges();
+            return oldIns;
 
+        }
 
+        public IEnumerable<Lecture> AllLecturesInSpecificSection(int SecId)
+        {
+         
+           return  _db.Lectures.Where(obj => obj.SectionId == SecId).ToList();   
+            
+        }
+
+        public IEnumerable<CourseSection> AllCourseSectionsInSpecificCourse(int CourseId)
+        {
+            return _db.CourseSections.Where(obj => obj.CrsId == CourseId).ToList();
+        }
     }
 }
 

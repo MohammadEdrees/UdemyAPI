@@ -43,12 +43,8 @@ namespace UdemyAPI.Controllers
         [HttpGet]
         public ActionResult GetSortedCoursesRelatedToTopic(int id)
         {
-            //List<StdCr> studentsCourses = _db.GetAllStudentCourses();
-            //var GroupedByCourseId = studentsCourses.GroupBy(e => e.CrsId).ToList();
-            //List<StdCr> studentsByCourseId =studentsCourses.Where(e => e.StdId == id).ToList();
-            //
-            return Ok(_db.GetSortedCoursesRelatedToTopic(id));
-            ///return _db.GetSortedCoursesRelatedToTopic(id);           
+
+            return Ok(_db.GetSortedCoursesRelatedToTopic(id));      
         }
         [HttpGet]
         public IActionResult GetTopCoursesbyStudents(int topicId)
@@ -94,8 +90,17 @@ namespace UdemyAPI.Controllers
         [HttpPost("{CrsId}")]
         public IActionResult AddCourseSection(int CrsId, CourseSection courseSection)
         {
-            CourseSection CrsSec = _db.AddCourseSection(CrsId, courseSection);
-            return Ok(CrsSec);
+            if (CrsId > 0)
+            {
+                CourseSection CrsSec = _db.AddCourseSection(CrsId, courseSection);
+                if(CrsSec != null)
+                return Ok(CrsSec);
+
+                return BadRequest("Error");
+
+            }
+            return BadRequest("Error");
+
         }
 
         [HttpPost("{SecId}")]
@@ -128,6 +133,38 @@ namespace UdemyAPI.Controllers
             if (lecture == null)
                 return BadRequest("Not Exist");
             return Ok(lecture);
+        }
+
+        [HttpGet]
+        public IActionResult GetAllCourseSections(int courseId)
+        {
+            if (courseId > 0)
+            {
+                IEnumerable<CourseSection> sections = _db.AllCourseSectionsInSpecificCourse(courseId);
+                if (sections !=null)
+                {
+                    return Ok(sections);
+
+                }
+
+            }
+            return BadRequest("Something went wrong");
+        }
+
+        [HttpGet]
+        public IActionResult LecuresInSection(int sectionId)
+        {
+            if (sectionId > 0)
+            {
+                IEnumerable<Lecture> lectures = _db.AllLecturesInSpecificSection(sectionId);
+                if (lectures != null)
+                {
+                    return Ok(lectures);
+
+                }
+
+            }
+            return BadRequest("Something went wrong");
         }
     }
 }
