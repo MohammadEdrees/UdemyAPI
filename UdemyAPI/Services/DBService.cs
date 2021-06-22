@@ -500,6 +500,13 @@ namespace UdemyAPI.Services
 
             return _db.SupCategs.Where(col => col.Category.CategoryName == catName).ToList();
         }
+
+        public IEnumerable<Course> SortedCourseForInstById(int instId)
+        {
+           return _db.Courses.
+                Where(obj => obj.InstId == instId).
+                OrderByDescending(obj => obj.studentCourses.Count).ToList();
+        }
     }
 }
 

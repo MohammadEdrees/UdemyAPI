@@ -166,5 +166,15 @@ namespace UdemyAPI.Controllers
             }
             return BadRequest("Something went wrong");
         }
+
+        [HttpGet]
+        public IActionResult GetSortedInstructorCrs(int instId)
+        {
+            if (instId > 0)
+            {
+                return Ok(_db.SortedCourseForInstById(instId));
+            }
+            return BadRequest(" Not Valid Course Id");
+        }
     }
 }
