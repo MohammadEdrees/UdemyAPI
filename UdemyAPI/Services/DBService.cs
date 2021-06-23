@@ -33,10 +33,12 @@ namespace UdemyAPI.Services
             _db = db;
             _configuration = configuration;
         }
+
         public List<Category> GetAllCategories()
         {
             return _db.Categories.ToList();
         }
+
         public List<Topic> GetAllTopics()
         {
             
@@ -47,18 +49,22 @@ namespace UdemyAPI.Services
         {
             return _db.Courses.ToList();
         }
+
         public List<Instructor> GetAllInstructors()
         {
             return _db.Instructors.ToList();
         }
+
         public List<Student> GetAllStudents()
         {
             return _db.Students.ToList();
         }
+
         public List<Admin> GetAllAdmins()
         {
             return _db.Admins.ToList();
         }
+
         public List<SupCateg> GetSupCategoriesById(int id)
         {
             return _db.SupCategs.Where(obj => obj.CategoryId == id).ToList();
@@ -71,6 +77,7 @@ namespace UdemyAPI.Services
             _db.SaveChanges();
             return s;
         }
+
         public  Student AddStudent(Student s)
         {
             // s.Password=>Hash
@@ -79,23 +86,28 @@ namespace UdemyAPI.Services
             _db.SaveChanges();
             return s;
         }
+
         public Course GetCourseById(int id)
         {
            return _db.Courses.FirstOrDefault(obj => obj.CrsId == id);
         }
+
         public Course GetCourseByTitle(string title)
         {
            
              return   _db.Courses.FirstOrDefault(obj => obj.Title == title);
         }
+
         public Instructor GetInstructorById(int id)
         {
             return _db.Instructors.FirstOrDefault(obj => obj.InstId == id);
         }
+
         public Instructor GetInstructorByName(string name)
         {
             return _db.Instructors.FirstOrDefault(obj => obj.Fname == name || obj.Lname == name);
         }
+
         public Category GetCategoryById(int id)
         {
             return _db.Categories.Find(id);
@@ -506,6 +518,49 @@ namespace UdemyAPI.Services
            return _db.Courses.
                 Where(obj => obj.InstId == instId).
                 OrderByDescending(obj => obj.studentCourses.Count).ToList();
+        }
+
+        //
+        public int GetStudnetNumbersWithInst(int instId)
+        {
+            int count = 0;
+            IEnumerable<Course>  courses= SortedCourseForInstById(instId);
+            foreach(Course item in courses)
+            {
+                count += item.studentCourses.Count; 
+            }
+            return count;
+            
+        }
+
+        public Lecture GetFirstLectue(int CrsId)
+        {
+            return _db.Lectures.FirstOrDefault(obj => obj.CourseSection.CrsId == CrsId);
+        }
+
+        public Student GetStudentByID(int stdId)
+        {
+            return _db.Students.FirstOrDefault(obj => obj.StdId == stdId);
+        }
+
+        public List<Course> GetStudentCourses(int StdId)
+        {
+            List<Course> courses = new List<Course>();
+            List<StdCr> stdCrs = _db.StdCrs.Where(obj => obj.StdId == StdId).ToList();
+            foreach(StdCr item in stdCrs)
+            {
+                Course course = _db.Courses.FirstOrDefault( obj => obj.CrsId == item.CrsId);
+                courses.Add(course);
+            }
+            return courses;
+        }
+
+        public IEnumerable<Course> DeleteCourseEnrollment(int crsId,int stdId)
+        {
+             StdCr stdCr = _db.StdCrs.FirstOrDefault(obj => obj.CrsId == crsId && obj.StdId == stdId);
+            _db.StdCrs.Remove(stdCr);
+            _db.SaveChanges();
+            return (GetStudentCourses(stdId));
         }
     }
 }

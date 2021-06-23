@@ -40,12 +40,14 @@ namespace UdemyAPI.Controllers
                 return BadRequest();
             }
         }
+
         [HttpGet]
         public ActionResult GetSortedCoursesRelatedToTopic(int id)
         {
 
             return Ok(_db.GetSortedCoursesRelatedToTopic(id));      
         }
+
         [HttpGet]
         public IActionResult GetTopCoursesbyStudents(int topicId)
         {
@@ -54,6 +56,7 @@ namespace UdemyAPI.Controllers
                 return BadRequest();
             return Ok(data);
         }
+
         [HttpGet]
         public IActionResult GetAllCoursesInOneCateg(int id)
         {
@@ -71,16 +74,19 @@ namespace UdemyAPI.Controllers
             return Ok(result);
 
         }
+
         [HttpGet]
         public IActionResult GetOrderedCoursesInCategory(int id) 
             { 
             return Ok(_db.GetOrderedCoursesInCategory(id));
            }
+
         [HttpGet]
         public IActionResult GetOrderedCoursesInSupCategory(int id)
         {
             return Ok(_db.GetOrderedCoursesInSupCategory(id));
         }
+
         [HttpGet]
         public IActionResult GetCourseById(int id)
         {
@@ -117,7 +123,7 @@ namespace UdemyAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{SecID}")]
+        [HttpGet]
         public IActionResult GetCourseSection(int SecID)
         {
             CourseSection courseSection = _db.GetCourseSection(SecID);
@@ -126,7 +132,7 @@ namespace UdemyAPI.Controllers
             return Ok(courseSection);
         }
 
-        [HttpGet("{LecID}")]
+        [HttpGet]
         public IActionResult GetLecture(int LecID)
         {
             Lecture lecture = _db.GetLecture(LecID);
@@ -175,6 +181,48 @@ namespace UdemyAPI.Controllers
                 return Ok(_db.SortedCourseForInstById(instId));
             }
             return BadRequest(" Not Valid Course Id");
+        }
+
+        [HttpGet]
+        public IActionResult GetFirstLectue(int CrsID)
+        {
+            if (CrsID > 0)
+            {
+                Lecture lecture = _db.GetFirstLectue(CrsID);
+                if (lecture != null)
+                {
+                    return Ok(lecture);
+
+                }
+
+            }
+            return BadRequest("Something went wrong");
+        }
+
+        [HttpGet]
+        public IActionResult GetStudentCourses(int StdId)
+        {
+            if (StdId > 0)
+            {
+                List<Course> courses = _db.GetStudentCourses(StdId);
+                if (courses != null)
+                {
+                    return Ok(courses);
+                }
+
+            }
+            return BadRequest("Something went wrong");
+        }
+
+        [HttpDelete]
+        public IActionResult DeleteCourseEnrollment(int crsId,int stdId)
+        {
+            IEnumerable<Course> courses = _db.DeleteCourseEnrollment(crsId,stdId);
+            if (courses != null)
+            {
+                return Ok(courses);
+            }
+            return BadRequest("Something went wrong");
         }
     }
 }

@@ -109,7 +109,28 @@ namespace UdemyAPI.Controllers
             }
 
         }
-           
+
+        [HttpGet]
+        public ActionResult<Instructor> GetStudnetNumbersWithInst(int id)
+        {
+            if (id > 0)
+            {
+                int NumberOfStudents = _db.GetStudnetNumbersWithInst(id);
+                if (NumberOfStudents != 0)
+                {
+                    return Ok(NumberOfStudents);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
     }
         //    if (id > 0)
         //    {

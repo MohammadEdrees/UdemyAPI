@@ -36,6 +36,17 @@ namespace UdemyAPI.Controllers
             return BadRequest(" There is no students yet ");
 
         }
+
+        [HttpGet]
+        public IActionResult GetStudentById(int StdId)
+        {
+            Student student = _db.GetStudentById(StdId);
+            if (student == null)
+                return BadRequest("Not Exist");
+
+            return Ok(student);
+        }
+
         [HttpPost, DisableRequestSizeLimit]
         [RequestFormLimits(MultipartBodyLengthLimit = 204857600)]
         public IActionResult StudentRegistration( Student s)

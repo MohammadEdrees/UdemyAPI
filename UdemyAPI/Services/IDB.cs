@@ -84,10 +84,10 @@ namespace UdemyAPI.Services
 
         IEnumerable<Course> SortedCourseForInstById(int instId);
 
-
-
-
-
+        Lecture GetFirstLectue(int CrsId);
+        List<Course> GetStudentCourses(int StdId);
+        IEnumerable<Course> DeleteCourseEnrollment(int crsId, int stdId);
+        int GetStudnetNumbersWithInst(int instId);
 
     }
 }
