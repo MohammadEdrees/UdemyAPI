@@ -10,7 +10,7 @@ using UdemyAPI.Services;
 namespace UdemyAPI.Controllers
 {
     [ApiController]
-    [Authorize(AuthenticationSchemes ="Bearer")]
+    //[Authorize(AuthenticationSchemes ="Bearer")]
     [Route("api/[controller]/[Action]")]
 
     public class CategoriesController : ControllerBase
@@ -20,7 +20,7 @@ namespace UdemyAPI.Controllers
         {
             _db = db;
         }
-        [AllowAnonymous]
+
         [HttpGet]
         public ActionResult<List<Category>> GetAllCategories()
         {

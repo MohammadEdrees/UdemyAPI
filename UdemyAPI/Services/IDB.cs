@@ -32,6 +32,8 @@ namespace UdemyAPI.Services
         Instructor AddInstructor(Instructor s);
 
         Student AddStudent(Student s);
+        Course AddCourse(int instId, Course course);
+
 
          Course GetCourseById(int id);
     
@@ -71,8 +73,12 @@ namespace UdemyAPI.Services
         public List<Topic> GetTopicsInCategory(int catId);
         public List<Instructor> GetInstructorsInCategory(int catId);
 
-        CourseSection AddCourseSection(int CrsId, CourseSection courseSection);
-        Lecture AddLecture(int SecId, Lecture lecture);
+        IEnumerable<CourseSection> AddCourseSection(int CrsId, CourseSection courseSection);
+        IEnumerable<CourseSection> GetCourseSections(int CrsId);
+
+        Task<IEnumerable<Lecture>> AddLecture(int SecId, Lecture lecture);
+        IEnumerable<Lecture> GetCourseLectures(int crsId);
+
         Task<Lecture> UploadLectureVideo(int LectId, IFormFile Video);
         CourseSection GetCourseSection(int SecID);
         Lecture GetLecture(int LecID);
@@ -87,6 +93,8 @@ namespace UdemyAPI.Services
         Lecture GetFirstLectue(int CrsId);
         List<Course> GetStudentCourses(int StdId);
         IEnumerable<Course> DeleteCourseEnrollment(int crsId, int stdId);
+        IEnumerable<CourseSection> DeleteCourseSection(int crsId, int sectionId);
+        Task<IEnumerable<Lecture>> DeleteSectionLecture(int crsId, int lectureId);
         int GetStudnetNumbersWithInst(int instId);
 
     }

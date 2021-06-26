@@ -72,7 +72,9 @@ namespace UdemyAPI.Services
 
 
         public Instructor AddInstructor(Instructor s)
-        {    // s.Password=>Hash
+        {   
+            //s.Password=>Hash
+            //s.Password = CommonMethods.ConvertToEncrypt(s.Password);
             _db.Instructors.Add(s);
             _db.SaveChanges();
             return s;
@@ -80,11 +82,21 @@ namespace UdemyAPI.Services
 
         public  Student AddStudent(Student s)
         {
-            // s.Password=>Hash
-           // s.ImagePath = await UploadImage(stdImg);
+            //s.Password=>Hash
+            //s.Password = CommonMethods.ConvertToEncrypt(s.Password);
+            //s.ImagePath = await UploadImage(stdImg);
             _db.Students.Add(s);
             _db.SaveChanges();
             return s;
+        }
+
+        public Course AddCourse(int instId,Course course)
+        {
+            course.InstId = instId;
+            course.Instructor = _db.Instructors.FirstOrDefault(obj => obj.InstId == instId);
+            _db.Courses.Add(course);
+            _db.SaveChanges();
+            return course;
         }
 
         public Course GetCourseById(int id)
@@ -224,6 +236,7 @@ namespace UdemyAPI.Services
 
         public object Login(UserModel user)
         {
+           //user.Password = CommonMethods.ConvertToDecrypt(user.Password);
            Student student =  _db.Students.FirstOrDefault(obj => obj.Mail == user.Mail &&
            obj.Password==user.Password 
                      );
@@ -298,7 +311,7 @@ namespace UdemyAPI.Services
                 issuer: _configuration["JWT:Issuer"],
                 audience: _configuration["JWT:Audience"],
                 claims: new List<Claim>(),
-                expires: DateTime.Now.AddHours(5),
+                expires: DateTime.Now.AddDays(5),
                 signingCredentials: signinCredentials
             );
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
@@ -415,11 +428,13 @@ namespace UdemyAPI.Services
             var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
             var a = await auth.SignInWithEmailAndPasswordAsync(AuthMail, Password);
             var cancellation = new CancellationTokenSource();
-            //Stream
-            using (var fileStream = new FileStream(Path.Combine("Images/", vid.FileName), FileMode.Create))
+            //Stream0
+            await using (var fileStream =  new FileStream(Path.Combine("Images/", vid.FileName), FileMode.Create))
             {
                 await vid.CopyToAsync(fileStream);
             }
+
+
             FileStream fs;
             fs = new FileStream(Path.Combine("Images/" + vid.FileName), FileMode.Open);
 
@@ -441,12 +456,34 @@ namespace UdemyAPI.Services
         }
 
 
-        public CourseSection AddCourseSection(int CrsId, CourseSection courseSection)
+
+        public IEnumerable<CourseSection> GetCourseSections(int CrsId)
+        {
+            return _db.CourseSections.Where(obj => obj.CrsId == CrsId).ToList();
+        }
+
+        public IEnumerable<CourseSection> AddCourseSection(int CrsId, CourseSection courseSection)
         {
             courseSection.CrsId = CrsId;
             _db.CourseSections.Add(courseSection);
             _db.SaveChanges();
-            return courseSection;
+            return GetCourseSections(CrsId);
+        }
+
+        public IEnumerable<CourseSection> DeleteCourseSection(int crsId, int sectionId)
+        {
+            CourseSection courseSection = _db.CourseSections.FirstOrDefault(obj => obj.CrsId == crsId && obj.SectionId == sectionId);
+            _db.CourseSections.Remove(courseSection);
+            _db.SaveChanges();
+            return GetCourseSections(crsId);
+        }
+
+        public async Task<IEnumerable<Lecture>> DeleteSectionLecture(int crsId,int lectureId)
+        {
+            Lecture lecture = _db.Lectures.FirstOrDefault(obj => obj.CourseSection.CrsId == crsId && obj.LectureId == lectureId);
+            _db.Lectures.Remove(lecture);
+            await _db.SaveChangesAsync();
+            return GetCourseLectures(crsId);
         }
 
         public CourseSection GetCourseSection(int SecID)
@@ -454,13 +491,23 @@ namespace UdemyAPI.Services
             return _db.CourseSections.FirstOrDefault(obj => obj.SectionId == SecID);
         }
 
-        public Lecture AddLecture(int SecId, Lecture lecture)
+        public IEnumerable<Lecture> GetCourseLectures(int crsId)
         {
-            lecture.SectionId = SecId;
-            _db.Lectures.Add(lecture);
-            _db.SaveChanges();
-            return lecture;
+            return _db.Lectures.Where(obj => obj.CourseSection.CrsId == crsId).ToList();
         }
+
+        public async Task<IEnumerable<Lecture>> AddLecture(int SecId, Lecture lecture)
+        {
+            
+            lecture.SectionId = SecId;
+            lecture.CourseSection = _db.CourseSections.FirstOrDefault(obj => obj.SectionId == SecId);
+            _db.Lectures.Add(lecture);
+            await _db.SaveChangesAsync();
+            return GetCourseLectures(lecture.CourseSection.CrsId);
+            //return _db.Lectures.Where(obj => obj.CourseSection.CrsId == lecture.CourseSection.CrsId).ToList();
+        }
+
+
 
         public Lecture GetLecture(int LecID)
         {
@@ -471,6 +518,7 @@ namespace UdemyAPI.Services
         {
             Lecture lecture = _db.Lectures.FirstOrDefault(obj => obj.LectureId == LectId);
             string Vidlink = await UploadVideo(Video);
+            lecture.Title = Path.GetFileNameWithoutExtension(Video.FileName);
             lecture.Link = Vidlink;
             _db.SaveChanges();
             return lecture;

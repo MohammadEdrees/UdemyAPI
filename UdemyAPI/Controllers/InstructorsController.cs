@@ -132,16 +132,5 @@ namespace UdemyAPI.Controllers
         }
 
     }
-        //    if (id > 0)
-        //    {
-        //      Instructor  oldInst = _db.GetInstructorById(id);
-        //        if (oldInst.InstId == ins.InstId) {
-        //            _db.EditInstructor(oldInst, ins);
-        //        }
-        //        return  BadRequest("Instructors Not Found"); 
-        //    }
-        //    return BadRequest("Instructor Not Found");
-        //}
-
-    //}
+       
 }

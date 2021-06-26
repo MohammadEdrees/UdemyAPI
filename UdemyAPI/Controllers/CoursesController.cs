@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using UdemyAPI.Models;
 using UdemyAPI.Services;
@@ -93,28 +95,86 @@ namespace UdemyAPI.Controllers
             return Ok(_db.GetCourseById(id));
         }
 
-        [HttpPost("{CrsId}")]
+        [HttpPut("{CrsId}")]
         public IActionResult AddCourseSection(int CrsId, CourseSection courseSection)
         {
             if (CrsId > 0)
             {
-                CourseSection CrsSec = _db.AddCourseSection(CrsId, courseSection);
-                if(CrsSec != null)
-                return Ok(CrsSec);
+                IEnumerable<CourseSection> CrsSections = _db.AddCourseSection(CrsId, courseSection);
+                if(CrsSections != null)
+                return Ok(CrsSections);
 
                 return BadRequest("Error");
-
             }
             return BadRequest("Error");
-
         }
 
-        [HttpPost("{SecId}")]
-        public IActionResult AddLecture(int SecId, Lecture lecture)
+        [HttpPut("{insId}")]
+        public IActionResult AddInstructorCourse(int insId,Course course)
         {
-            Lecture Lec = _db.AddLecture(SecId, lecture);
-            return Ok(Lec);
+            if(_db.GetInstructorById(insId) != null)
+            {
+                Course newCourse = _db.AddCourse(insId, course);
+
+                if (newCourse != null)
+                    return Ok(newCourse);
+              
+
+                return BadRequest("Error Adding");
+            }
+            
+            return BadRequest("Instructor Not Exist");
         }
+
+
+        [HttpGet]
+        public IActionResult GetCourseSections(int crsId)
+        {
+            if (crsId > 0)
+            {
+                IEnumerable<CourseSection> CrsSections = _db.GetCourseSections(crsId);
+                if (CrsSections != null)
+                    return Ok(CrsSections);
+
+                return BadRequest("Error");
+            }
+            return BadRequest("Error");
+        }
+
+
+        [HttpPut("{SecId}")]
+        public async Task<IActionResult> AddLecture(int SecId,Lecture lecture)
+        {
+
+            if(SecId >0)
+            {
+                if(_db.GetCourseSection(SecId)!=null)
+                {
+                    IEnumerable<Lecture> courseLecture = await _db.AddLecture(SecId,lecture);
+                    if (courseLecture != null)
+                        return Ok(courseLecture);
+                }
+                return BadRequest("Not Found");
+            }
+            return BadRequest("Error");
+        }
+
+
+        [HttpGet]
+        public IActionResult GetCourseLectures(int crsId)
+        {
+            if (crsId > 0)
+            {
+                IEnumerable<Lecture> CrsLecture = _db.GetCourseLectures(crsId);
+                if (CrsLecture != null)
+                    return Ok(CrsLecture);
+
+                return BadRequest("Error");
+            }
+            return BadRequest("Error");
+        }
+
+
 
         [HttpPut("{LectId}"), DisableRequestSizeLimit]
         public async Task<IActionResult> UploadLectureVideo(int LectId, IFormFile Video)
@@ -122,6 +182,38 @@ namespace UdemyAPI.Controllers
             var result = await _db.UploadLectureVideo(LectId, Video);
             return Ok(result);
         }
+
+
+        [HttpPost, DisableRequestSizeLimit]
+        public IActionResult Upload()
+        {
+            try
+            {
+                var file = Request.Form.Files[0];
+                var folderName = Path.Combine("Resources", "Images");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (file.Length > 0)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    var dbPath = Path.Combine(folderName, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    return Ok(new { dbPath });
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
+        }
+
 
         [HttpGet]
         public IActionResult GetCourseSection(int SecID)
@@ -224,5 +316,29 @@ namespace UdemyAPI.Controllers
             }
             return BadRequest("Something went wrong");
         }
+
+        [HttpDelete]
+        public IActionResult DeleteCourseSection(int crsId, int secId)
+        {
+            IEnumerable<CourseSection> courseSections = _db.DeleteCourseSection(crsId, secId);
+            if (courseSections != null)
+            {
+                return Ok(courseSections);
+            }
+            return BadRequest("Something went wrong");
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteSectionLecture(int crsId ,int lectId)
+        {
+            IEnumerable<Lecture> sectionLecture =await _db.DeleteSectionLecture(crsId, lectId);
+            if(sectionLecture!=null)
+            {
+                return Ok(sectionLecture);
+            }
+            return BadRequest("Someting went wrong");
+
+        }
+
     }
 }
