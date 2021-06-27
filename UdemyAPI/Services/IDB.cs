@@ -79,7 +79,10 @@ namespace UdemyAPI.Services
         Task<IEnumerable<Lecture>> AddLecture(int SecId, Lecture lecture);
         IEnumerable<Lecture> GetCourseLectures(int crsId);
 
-        Task<Lecture> UploadLectureVideo(int LectId, IFormFile Video);
+        Task<IEnumerable<Lecture>> UploadLectureVideo(int LectId, string dpPath);
+        Task<string> UploadVideo(string dpPath);
+
+
         CourseSection GetCourseSection(int SecID);
         Lecture GetLecture(int LecID);
 

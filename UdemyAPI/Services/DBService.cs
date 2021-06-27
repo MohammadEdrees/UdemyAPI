@@ -105,8 +105,7 @@ namespace UdemyAPI.Services
         }
 
         public Course GetCourseByTitle(string title)
-        {
-           
+        {          
              return   _db.Courses.FirstOrDefault(obj => obj.Title == title);
         }
 
@@ -123,7 +122,6 @@ namespace UdemyAPI.Services
         public Category GetCategoryById(int id)
         {
             return _db.Categories.Find(id);
-
         }
 
         public List<Topic> GetTopicsBySupCategId(int id)
@@ -422,21 +420,33 @@ namespace UdemyAPI.Services
         }
 
 
-        public async Task<string> UploadVideo(IFormFile vid)
+
+
+        public async Task<IEnumerable<Lecture>> UploadLectureVideo(int LectId, string dpPath)
+        {
+            Lecture lecture = _db.Lectures.FirstOrDefault(obj => obj.LectureId == LectId);
+            string Vidlink = await UploadVideo(dpPath);
+            lecture.Title = Path.GetFileNameWithoutExtension(dpPath);
+            lecture.Link = Vidlink;
+            await _db.SaveChangesAsync();
+            return GetCourseLectures(lecture.CourseSection.CrsId);
+        }
+
+
+        public async Task<string> UploadVideo(string dpPath)
         {
             // Firebase Auth
             var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
             var a = await auth.SignInWithEmailAndPasswordAsync(AuthMail, Password);
             var cancellation = new CancellationTokenSource();
             //Stream0
-            await using (var fileStream =  new FileStream(Path.Combine("Images/", vid.FileName), FileMode.Create))
-            {
-                await vid.CopyToAsync(fileStream);
-            }
-
+            //await using (var fileStream =  new FileStream(Path.Combine("Images/", vid.FileName), FileMode.Create))
+            //{
+            //    await vid.CopyToAsync(fileStream);
+            //}
 
             FileStream fs;
-            fs = new FileStream(Path.Combine("Images/" + vid.FileName), FileMode.Open);
+            fs = new FileStream(Path.Combine("Images/",dpPath), FileMode.Open);
 
             // Firebase Upload
 
@@ -447,7 +457,7 @@ namespace UdemyAPI.Services
                     ,
                     ThrowOnCancel = true
                 }).Child("Videos")
-                .Child($"{vid.FileName}")
+                  .Child($"{dpPath}") 
                 .PutAsync(fs, cancellation.Token);
             var downloadUrl = await upload;
             string str = downloadUrl;
@@ -514,15 +524,7 @@ namespace UdemyAPI.Services
             return _db.Lectures.FirstOrDefault(obj => obj.LectureId == LecID);
         }
 
-        public async Task<Lecture> UploadLectureVideo(int LectId, IFormFile Video)
-        {
-            Lecture lecture = _db.Lectures.FirstOrDefault(obj => obj.LectureId == LectId);
-            string Vidlink = await UploadVideo(Video);
-            lecture.Title = Path.GetFileNameWithoutExtension(Video.FileName);
-            lecture.Link = Vidlink;
-            _db.SaveChanges();
-            return lecture;
-        }
+
 
         public Instructor EditInstructor(Instructor oldIns, Instructor newIns)
         {

@@ -175,33 +175,28 @@ namespace UdemyAPI.Controllers
         }
 
 
-
-        [HttpPut("{LectId}"), DisableRequestSizeLimit]
-        public async Task<IActionResult> UploadLectureVideo(int LectId, IFormFile Video)
-        {
-            var result = await _db.UploadLectureVideo(LectId, Video);
-            return Ok(result);
-        }
-
-
-        [HttpPost, DisableRequestSizeLimit]
-        public IActionResult Upload()
+        [HttpPut("{lectId}"), DisableRequestSizeLimit]
+        public async Task<IActionResult> Upload(int lectId)
         {
             try
             {
                 var file = Request.Form.Files[0];
-                var folderName = Path.Combine("Resources", "Images");
+                var folderName = Path.Combine("Images/");
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
                 if (file.Length > 0)
                 {
                     var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
                     var fullPath = Path.Combine(pathToSave, fileName);
                     var dbPath = Path.Combine(folderName, fileName);
+
                     using (var stream = new FileStream(fullPath, FileMode.Create))
                     {
-                        file.CopyTo(stream);
+                        await file.CopyToAsync(stream);
                     }
-                    return Ok(new { dbPath });
+
+                    IEnumerable<Lecture> lectures  = await _db.UploadLectureVideo(lectId,file.FileName);
+
+                    return Ok(lectures);
                 }
                 else
                 {
