@@ -65,9 +65,14 @@ namespace UdemyAPI.Services
             return _db.Admins.ToList();
         }
 
-        public List<SupCateg> GetSupCategoriesById(int id)
+        public List<SupCateg> GetSupCategoriesByCateogryId(int id)
         {
             return _db.SupCategs.Where(obj => obj.CategoryId == id).ToList();
+        }
+
+        public List<SupCateg> GetSupCategsById(int id)
+        {
+            return _db.SupCategs.Where(obj => obj.SupCatId == id).ToList();
         }
 
 
@@ -419,7 +424,31 @@ namespace UdemyAPI.Services
             return instructors;
         }
 
+        //All instructors in sub category
+        public IEnumerable<Instructor> GetInstructorsInSubCategory(int subCatId)
+        {
+            IEnumerable<Course> courses = _db.Courses.Where(obj => obj.Top.SupCatId == subCatId).ToList();
+            List<Instructor> instructors = new List<Instructor>();
+            foreach (var item in courses)
+            {
+                Instructor instructor = _db.Instructors.FirstOrDefault(obj => obj.InstId == item.InstId);
+                instructors.Add(instructor);
+            }
+            return instructors;
+        }
 
+        //All instructors by topic
+        public IEnumerable<Instructor> GetInstructorsInTopic(int topId)
+        {
+            IEnumerable<Course> courses = _db.Courses.Where(obj => obj.TopId == topId).ToList();
+            List<Instructor> instructors = new List<Instructor>();
+            foreach (var item in courses)
+            {
+                Instructor instructor = _db.Instructors.FirstOrDefault(obj => obj.InstId == item.InstId);
+                instructors.Add(instructor);
+            }
+            return instructors;
+        }
 
 
         public async Task<IEnumerable<Lecture>> UploadLectureVideo(int LectId, string dpPath)
@@ -612,6 +641,7 @@ namespace UdemyAPI.Services
             _db.SaveChanges();
             return (GetStudentCourses(stdId));
         }
+
     }
 }
 

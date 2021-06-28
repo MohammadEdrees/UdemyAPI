@@ -23,7 +23,9 @@ namespace UdemyAPI.Services
 
         IEnumerable<IGrouping<int, StdCr>> GetSortedCoursesRelatedToTopic(int topId);
 
-        List<SupCateg> GetSupCategoriesById(int id);
+        List<SupCateg> GetSupCategoriesByCateogryId(int id);
+        List<SupCateg> GetSupCategsById(int id);
+
 
         List<Topic> GetTopicsBySupCategId(int id);
 
@@ -59,7 +61,7 @@ namespace UdemyAPI.Services
         object Login(UserModel user);
         //object Logout(object user);
         IEnumerable<Course> GetAllCoursesInOneCategory(int categId);
-        List<Category> GetTop8Categories();
+        List<Category> GetTop8Categories();  //Get Only 8
         string GetToken();
 
         Task<string> UploadImage(IFormFile img) ;
@@ -68,10 +70,12 @@ namespace UdemyAPI.Services
         Task<Course> UploadCourseImg(IFormFile InsImg,int id) ;
         Task<Category> UploadCategoryImg(IFormFile InsImg,int id) ;
 
-        public List<Course> GetOrderedCoursesInCategory(int catId);
-        public List<Course> GetOrderedCoursesInSupCategory(int supcatId);
-        public List<Topic> GetTopicsInCategory(int catId);
-        public List<Instructor> GetInstructorsInCategory(int catId);
+        List<Course> GetOrderedCoursesInCategory(int catId);
+        List<Course> GetOrderedCoursesInSupCategory(int supcatId);
+        List<Topic> GetTopicsInCategory(int catId);
+        List<Instructor> GetInstructorsInCategory(int catId);
+        IEnumerable<Instructor> GetInstructorsInSubCategory(int subCatId);
+        IEnumerable<Instructor> GetInstructorsInTopic(int topId);
 
         IEnumerable<CourseSection> AddCourseSection(int CrsId, CourseSection courseSection);
         IEnumerable<CourseSection> GetCourseSections(int CrsId);

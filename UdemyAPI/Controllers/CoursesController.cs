@@ -30,12 +30,12 @@ namespace UdemyAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Course>> GetCoursesByTopicId(int id)
+        public IActionResult GetCoursesByTopicId(int id)
         {
             List<Course> courses = _db.GetCoursesByTopicId(id);
             if (courses.Count > 0)
             {
-                return courses;
+                return Ok(courses);
             }
             else
             {

@@ -21,9 +21,24 @@ namespace UdemyAPI.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetSubCategoryById(int subCatId)
+        {
+            List<SupCateg> supCategs = _db.GetSupCategsById(subCatId);
+            if (supCategs.Count > 0)
+            {
+                return Ok(supCategs);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+
+        [HttpGet]
         public ActionResult<ICollection<SupCateg>> GetSupCategoryByCategoryId(int id)
         {
-            List<SupCateg> supCategs = _db.GetSupCategoriesById(id);
+            List<SupCateg> supCategs = _db.GetSupCategoriesByCateogryId(id);
             if (supCategs.Count > 0)
             {
                 return supCategs;
