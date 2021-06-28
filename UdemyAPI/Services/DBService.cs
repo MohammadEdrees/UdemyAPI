@@ -270,7 +270,6 @@ namespace UdemyAPI.Services
         {
             //get all students in one categoy sorted by count std
            //   _db.Students.Where(obj=>obj.)
-
             List<Category> categories = new List<Category>();
 
             List<Course> courses = _db.Courses.OrderByDescending(o => o.studentCourses.Count).ToList();
@@ -283,7 +282,7 @@ namespace UdemyAPI.Services
                 categories.Add(category);
             }
 
-            return categories;
+            return categories.Take(8).ToList();
         }
 
         public IEnumerable<Course> GetAllCoursesInOneCategory(int categId)
