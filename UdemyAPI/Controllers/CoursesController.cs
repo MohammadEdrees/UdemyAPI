@@ -301,6 +301,11 @@ namespace UdemyAPI.Controllers
             return BadRequest("Something went wrong");
         }
 
+
+
+
+
+
         [HttpDelete]
         public IActionResult DeleteCourseEnrollment(int crsId,int stdId)
         {

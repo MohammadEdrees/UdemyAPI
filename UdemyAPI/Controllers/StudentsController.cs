@@ -124,6 +124,7 @@ namespace UdemyAPI.Controllers
         //    }
         //    return Ok(file.FileName);
         //}
+
         [HttpPost, DisableRequestSizeLimit]
         [RequestFormLimits(MultipartBodyLengthLimit = 204857600)]
         // public async Task<IActionResult> Upload(IFormFile _file)
@@ -144,7 +145,22 @@ namespace UdemyAPI.Controllers
 
         }
 
-       
+        [HttpPost]
+        public IActionResult AddCourseEnrollment(int crsId, int stdId)
+        {
+            if(_db.GetStudentById(stdId) == null && _db.GetCourseById(crsId) == null)
+            {
+                NotFound("Check Your Data");
+            }
+
+            else
+            {
+                Course EnrolledCourse = _db.AddCourseEnrollment(crsId, stdId);
+                return Ok(EnrolledCourse);
+            }
+
+            return BadRequest();
+        }
 
     }
 }

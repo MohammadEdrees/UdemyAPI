@@ -99,6 +99,7 @@ namespace UdemyAPI.Services
 
         Lecture GetFirstLectue(int CrsId);
         List<Course> GetStudentCourses(int StdId);
+        Course AddCourseEnrollment(int crsId,int stdId);
         IEnumerable<Course> DeleteCourseEnrollment(int crsId, int stdId);
         IEnumerable<CourseSection> DeleteCourseSection(int crsId, int sectionId);
         Task<IEnumerable<Lecture>> DeleteSectionLecture(int crsId, int lectureId);

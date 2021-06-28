@@ -642,6 +642,18 @@ namespace UdemyAPI.Services
             return (GetStudentCourses(stdId));
         }
 
+        public Course AddCourseEnrollment(int crsId, int stdId)
+        {
+            StdCr newStdCr = new StdCr
+                {
+                    CrsId = crsId,
+                    StdId = stdId
+                };
+            _db.StdCrs.Add(newStdCr);
+            _db.SaveChanges();
+            return GetCourseById(crsId);
+        }
+
     }
 }
 
