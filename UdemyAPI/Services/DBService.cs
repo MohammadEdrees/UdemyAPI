@@ -253,11 +253,13 @@ namespace UdemyAPI.Services
                 if (instructor == null)
                     return null;
                 instructor.Token = GetToken();
+                _db.SaveChanges();
                 return instructor;
             }
             else
             {
                 student.Token = GetToken();
+                _db.SaveChanges();
                 return student;
             }
 
@@ -333,9 +335,9 @@ namespace UdemyAPI.Services
             {
                 await img.CopyToAsync(fileStream);
             }
+
             FileStream fs;
             fs = new FileStream(Path.Combine("Images/" + img.FileName), FileMode.Open);
-
             // Firebase Upload
 
             var upload = new FirebaseStorage(Bucket,
@@ -349,8 +351,17 @@ namespace UdemyAPI.Services
                 .PutAsync(fs, cancellation.Token);
                 var downloadUrl = await upload;
                 string str = downloadUrl;
+
+            CleanServer(fs, img.FileName);
+
              //  var url = new Uri(str);
-             return str;
+            return str;
+        }
+
+        public void CleanServer(FileStream fileStream,string path)
+        {
+            fileStream.Close();
+            File.Delete(Path.Combine("Images/" + path));
         }
 
         public async Task<Student> UploadStudentImg(IFormFile stdImg,int id)
@@ -489,6 +500,9 @@ namespace UdemyAPI.Services
                 .PutAsync(fs, cancellation.Token);
             var downloadUrl = await upload;
             string str = downloadUrl;
+
+            CleanServer(fs, dpPath);
+
             //  var url = new Uri(str);
             return str;
         }
