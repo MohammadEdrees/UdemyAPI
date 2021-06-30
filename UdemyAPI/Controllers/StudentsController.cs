@@ -54,7 +54,7 @@ namespace UdemyAPI.Controllers
             if (s == null)
                 return BadRequest("Check Student data please");
 
-            if (_db.GetStudentByMail(s.Mail) != null && _db.GetInstructorByMail(s.Mail) != null)
+            if (_db.GetStudentByMail(s.Mail) != null || _db.GetInstructorByMail(s.Mail) != null)
                 return BadRequest("Mail is Exists Try another one");
 
             if (ModelState.IsValid)

@@ -45,7 +45,7 @@ namespace UdemyAPI.Controllers
             if (ins == null)
                 return BadRequest();
             //GeInsBy mail 
-            if (_db.GetInstructorByMail(ins.Mail) != null && _db.GetStudentByMail(ins.Mail) != null)
+            if (_db.GetInstructorByMail(ins.Mail) != null || _db.GetStudentByMail(ins.Mail) != null)
                 return BadRequest("Mail is Exists Try another one ");//400
 
             if (ModelState.IsValid)
