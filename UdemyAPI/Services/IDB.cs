@@ -105,5 +105,9 @@ namespace UdemyAPI.Services
         Task<IEnumerable<Lecture>> DeleteSectionLecture(int crsId, int lectureId);
         int GetStudnetNumbersWithInst(int instId);
 
+        Topic GetTopicByTopicId(int TopicId);
+
+        IEnumerable<Student> DeleteStudent(Student Student);
+
     }
 }

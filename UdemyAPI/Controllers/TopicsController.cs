@@ -46,7 +46,30 @@ namespace UdemyAPI.Controllers
             return Ok(_db.GetTopicsInCategory(id));
         }
 
-       
+        [HttpGet]
+        public IActionResult GetTopicByTopicId(int Topicd)
+        {
+            Topic topic = _db.GetTopicByTopicId(Topicd);
+                if (topic != null)
+                    return Ok(topic);
+
+            return BadRequest("Topic Id Is Wrong ");
+            
+        }
+
+        [HttpDelete]
+        public IActionResult DeleteStudentByHisId(int id)
+        {
+            if (id > 0)
+            {
+                Student student = _db.GetStudentById(id);
+                if(student!=null)
+                return Ok(_db.DeleteStudent(student));
+            }
+            return BadRequest("Error In Delete ");
+        }
+
+
 
     }
 }

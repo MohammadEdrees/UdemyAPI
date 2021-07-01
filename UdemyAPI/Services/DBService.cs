@@ -667,6 +667,19 @@ namespace UdemyAPI.Services
             return GetCourseById(crsId);
         }
 
+        public Topic GetTopicByTopicId(int TopicId)
+        {
+            return _db.Topics.FirstOrDefault(obj => obj.TopId == TopicId);
+        }
+
+        public IEnumerable<Student> DeleteStudent(Student Student)
+        {
+                _db.Students.Remove(Student);
+                _db.SaveChanges();
+                return _db.Students.ToList();
+        }
+
+       
     }
 }
 
